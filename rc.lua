@@ -311,10 +311,12 @@ awful.rules.rules = {
        properties = { tag = tags[1][6] } },
      { rule = { class = "Icedove-bin" },
        properties = { tag = tags[1][8] } },
-     { rule = { class = "Nautilus" },
-       properties = { tag = tags[1][6] } },
+--     { rule = { class = "Nautilus" },
+--       properties = { tag = tags[1][6] } },
      { rule = { class = "Smplayer" },
        properties = { tag = tags[1][6] } },
+     { rule = { class = "Gitg" },
+       properties = { tag = tags[1][3] } },
 }
 -- }}}
 
@@ -354,12 +356,9 @@ autorun = true
 autorunApps =
 {
    "pidgin",
-   "ru",
    "gxneur",
-   "tomboy",
    "nautilus",
    "iceweasel",
-   "icedove",
    "gnome-alsamixer",
 }
 if autorun then
