@@ -58,8 +58,11 @@ end
 myawesomemenu = {
    { "pidgin", "pidgin" },
    { "icedove", "icedove" },
-   { "sylpheed", "sylpheed" },
-   { "nautilus", "nautilus" },
+   { "liferea", "liferea" },
+   { "iceweasel", "iceweasel" },
+   { "bg", "/home/iv/.BGBillingClient/bgbilling.sh" },
+   { "Бюджет", "gnucash" },
+   { "nautilus", "nautilus --no-deskto" },
    { "restart", awesome.restart },
    { "quit", awesome.quit }
 }
@@ -300,8 +303,8 @@ awful.rules.rules = {
       properties = { floating = true } },
     { rule = { class = "pinentry" },
       properties = { floating = true } },
-    { rule = { class = "gimp" },
-      properties = { floating = true } },
+--    { rule = { class = "gimp" },
+--      properties = { floating = true } },
     -- Set Firefox to always map on tags number 2 of screen 1.
      { rule = { class = "Iceweasel" },
        properties = { tag = tags[1][2] } },
@@ -309,7 +312,7 @@ awful.rules.rules = {
        properties = { tag = tags[1][9] } },
      { rule = { class = "Gnome-alsamixer" },
        properties = { tag = tags[1][6] } },
-     { rule = { class = "Icedove-bin" },
+     { rule = { class = "Mail" },
        properties = { tag = tags[1][8] } },
 --     { rule = { class = "Nautilus" },
 --       properties = { tag = tags[1][6] } },
@@ -317,6 +320,8 @@ awful.rules.rules = {
        properties = { tag = tags[1][6] } },
      { rule = { class = "Gitg" },
        properties = { tag = tags[1][3] } },
+     { rule = { class = "liferea" },
+       properties = { tag = tags[1][5] } },
 }
 -- }}}
 
@@ -356,9 +361,7 @@ autorun = true
 autorunApps =
 {
    "kbdd",
---   "nautilus",
    "iceweasel",
---  "gnome-alsamixer",
 }
 if autorun then
    for app = 1, #autorunApps do
