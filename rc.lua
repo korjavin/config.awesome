@@ -355,11 +355,10 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 autorun = true
 autorunApps =
 {
-   "pidgin",
-   "gxneur",
-   "nautilus",
+   "kbdd",
+--   "nautilus",
    "iceweasel",
-   "gnome-alsamixer",
+--  "gnome-alsamixer",
 }
 if autorun then
    for app = 1, #autorunApps do
