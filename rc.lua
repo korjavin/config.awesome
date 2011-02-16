@@ -217,6 +217,7 @@ globalkeys = awful.util.table.join(
 
     -- Prompt
     awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
+    awful.key({ modkey },            "l", function () awful.util.spawn('xset dpms force standby') end),
 
     awful.key({ modkey }, "x",
               function ()
@@ -363,7 +364,7 @@ autorunApps =
 {
    "pidgin",
    "/home/iv/bin/ru",
-   "gxneur",
+   "kbdd",
    "nautilus --no-desktop",
    "iceweasel",
 --   "icedove",
