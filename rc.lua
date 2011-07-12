@@ -58,7 +58,7 @@ end
 myawesomemenu = {
    { "pidgin", "pidgin" },
    { "icedove", "icedove" },
-   { "liferea", "liferea" },
+   { "google-chrome", "google-chrome" },
    { "iceweasel", "iceweasel" },
    { "bg", "/home/iv/.BGBillingClient/bgbilling.sh" },
    { "dcpp", "freedcpp" },
@@ -217,7 +217,7 @@ globalkeys = awful.util.table.join(
 
     -- Prompt
     awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
-    awful.key({ modkey },            "l", function () awful.util.spawn('xset dpms force standby') end),
+    awful.key({ modkey },            "z", function () awful.util.spawn('xset dpms force standby') end),
 
     awful.key({ modkey }, "x",
               function ()
@@ -308,18 +308,18 @@ awful.rules.rules = {
 --    { rule = { class = "gimp" },
 --      properties = { floating = true } },
     -- Set Firefox to always map on tags number 2 of screen 1.
-     { rule = { class = "Iceweasel" },
-       properties = { tag = tags[1][2] } },
-     { rule = { class = "Pidgin" },
-       properties = { tag = tags[1][9] } },
+--   { rule = { class = "Iceweasel" },
+--     properties = { tag = tags[1][2] } },
+--   { rule = { class = "Pidgin" },
+--     properties = { tag = tags[1][9] } },
      { rule = { class = "Gnome-alsamixer" },
        properties = { tag = tags[1][6] } },
-     { rule = { class = "Mail" },
-       properties = { tag = tags[1][8] } },
+--   { rule = { class = "Mail" },
+--     properties = { tag = tags[1][8] } },
 --     { rule = { class = "Nautilus" },
 --       properties = { tag = tags[1][6] } },
-     { rule = { class = "Smplayer" },
-       properties = { tag = tags[1][6] } },
+--   { rule = { class = "Smplayer" },
+--     properties = { tag = tags[1][6] } },
      { rule = { class = "Gitg" },
        properties = { tag = tags[1][3] } },
      { rule = { class = "liferea" },
@@ -362,11 +362,11 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 autorun = true
 autorunApps =
 {
-   "pidgin",
+--   "pidgin",
    "/home/iv/bin/ru",
    "kbdd",
-   "nautilus --no-desktop",
-   "iceweasel",
+--   "nautilus --no-desktop",
+--   "iceweasel",
 --   "icedove",
    "gnome-alsamixer",
 --   "tomboy",
