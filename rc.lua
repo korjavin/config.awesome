@@ -6,13 +6,16 @@ require("awful.rules")
 require("beautiful")
 -- Notification library
 require("naughty")
+-- User libraries
+require("vicious")
+require("scratch")
 
 -- Load Debian menu entries
 require("debian.menu")
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
-beautiful.init("/usr/share/awesome/themes/default/theme.lua")
+beautiful.init(home .. "/.config/awesome/zenburn.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "x-terminal-emulator"
@@ -68,7 +71,7 @@ myawesomemenu = {
    { "quit", awesome.quit }
 }
 
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+mymainmenu = awful.menu({ items = { { "Menu", myawesomemenu, beautiful.awesome_icon },
                                     { "Debian", debian.menu.Debian_menu.Debian },
                                   }
                         })
@@ -78,6 +81,59 @@ mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
 -- }}}
 
 -- {{{ Wibox
+--
+-- {{{ CPU usage and temperature
+cpuicon = widget({ type = "imagebox" })
+cpuicon.image = image(beautiful.widget_cpu)
+-- Initialize widgets
+cpugraph  = awful.widget.graph()
+tzswidget = widget({ type = "textbox" })
+-- Graph properties
+cpugraph:set_width(40):set_height(14)
+cpugraph:set_background_color(beautiful.fg_off_widget)
+cpugraph:set_gradient_angle(0):set_gradient_colors({
+   beautiful.fg_end_widget, beautiful.fg_center_widget, beautiful.fg_widget
+}) -- Register widgets
+vicious.register(cpugraph,  vicious.widgets.cpu,      "$1")
+--
+-- {{{ Network usage
+dnicon = widget({ type = "imagebox" })
+upicon = widget({ type = "imagebox" })
+dnicon.image = image(beautiful.widget_net)
+upicon.image = image(beautiful.widget_netup)
+-- Initialize widget
+netwidget = widget({ type = "textbox" })
+-- Register widget
+vicious.register(netwidget, vicious.widgets.net, '<span color="'
+  .. beautiful.fg_netdn_widget ..'">${eth0 down_kb}</span> <span color="'
+  .. beautiful.fg_netup_widget ..'">${eth0 up_kb}</span>', 3)
+-- }}}
+-- {{{ Volume level
+volicon = widget({ type = "imagebox" })
+volicon.image = image(beautiful.widget_vol)
+-- Initialize widgets
+volbar    = awful.widget.progressbar()
+volwidget = widget({ type = "textbox" })
+-- Progressbar properties
+volbar:set_vertical(true):set_ticks(true)
+volbar:set_height(12):set_width(8):set_ticks_size(2)
+volbar:set_background_color(beautiful.fg_off_widget)
+volbar:set_gradient_colors({ beautiful.fg_widget,
+   beautiful.fg_center_widget, beautiful.fg_end_widget
+}) -- Enable caching
+vicious.cache(vicious.widgets.volume)
+-- Register widgets
+vicious.register(volbar,    vicious.widgets.volume,  "$1",  2, "PCM")
+vicious.register(volwidget, vicious.widgets.volume, " $1%", 2, "PCM")
+-- Register buttons
+volbar.widget:buttons(awful.util.table.join(
+   awful.button({ }, 1, function () exec("gnome-alsamixer") end),
+   awful.button({ }, 4, function () exec("amixer -q set PCM 2dB+", false) end),
+   awful.button({ }, 5, function () exec("amixer -q set PCM 2dB-", false) end)
+)) -- Register assigned buttons
+volwidget:buttons(volbar.widget:buttons())
+-- }}}
+
 -- Create a textclock widget
 mytextclock = awful.widget.textclock({ align = "right" })
 
@@ -155,6 +211,9 @@ for s = 1, screen.count() do
         mylayoutbox[s],
         mytextclock,
         s == 1 and mysystray or nil,
+        volwidget,  volbar.widget, volicon,
+         upicon,     netwidget, dnicon,
+         cpugraph.widget, cpuicon,
         mytasklist[s],
         layout = awful.widget.layout.horizontal.rightleft
     }
@@ -288,6 +347,7 @@ clientbuttons = awful.util.table.join(
     awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
     awful.button({ modkey }, 1, awful.mouse.client.move),
     awful.button({ modkey }, 3, awful.mouse.client.resize))
+
 
 -- Set keys
 root.keys(globalkeys)
