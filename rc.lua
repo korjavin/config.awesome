@@ -19,6 +19,9 @@ terminal = "x-terminal-emulator"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
+monitor1="/usr/bin/xrandr --output LVDS1 --mode 1366x768  --output VGA1 --off"
+monitor2="/usr/bin/xrandr --output LVDS1 --off --output VGA1 --mode 1024x768"
+
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
 -- If you do not like this or do not have such a key,
@@ -57,12 +60,12 @@ end
 -- Create a laucher widget and a main menu
 myawesomemenu = {
    { "pidgin", "pidgin" },
-   { "icedove", "icedove" },
-   { "liferea", "liferea" },
    { "iceweasel", "iceweasel" },
+   { "chrome", "google-chrome" },
+   { "icedove", "icedove" },
    { "bg", "/home/iv/.BGBillingClient/bgbilling.sh" },
    { "Бюджет", "gnucash" },
-   { "nautilus", "nautilus --no-deskto" },
+   { "nautilus", "nautilus --no-desktop" },
    { "restart", awesome.restart },
    { "quit", awesome.quit }
 }
@@ -163,8 +166,8 @@ end
 -- {{{ Mouse bindings
 root.buttons(awful.util.table.join(
     awful.button({ }, 3, function () mymainmenu:toggle() end),
-    awful.button({ }, 4, awful.tag.viewnext),
-    awful.button({ }, 5, awful.tag.viewprev)
+    awful.button({ }, 5, awful.tag.viewnext),
+    awful.button({ }, 4, awful.tag.viewprev)
 ))
 -- }}}
 
@@ -201,6 +204,8 @@ globalkeys = awful.util.table.join(
         end),
 
     -- Standard program
+    awful.key({ modkey, "Control" }, "t", function () awful.util.spawn(monitor1) end),
+    awful.key({ modkey, "Shift" }, "t", function () awful.util.spawn(monitor2) end),
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
     awful.key({ modkey, "Control" }, "r", awesome.restart),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit),
@@ -361,7 +366,7 @@ autorun = true
 autorunApps =
 {
    "kbdd",
-   "iceweasel",
+   "gnome-alsamixer"
 }
 if autorun then
    for app = 1, #autorunApps do
