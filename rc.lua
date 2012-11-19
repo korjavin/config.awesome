@@ -57,18 +57,18 @@ end
 -- Create a laucher widget and a main menu
 myawesomemenu = {
    { "pidgin", "pidgin" },
-   { "icedove", "icedove" },
-   { "google-chrome", "google-chrome" },
-   { "iceweasel", "iceweasel" },
+   { "chrome", "google-chrome" },
    { "bg", "/home/iv/.BGBillingClient/bgbilling.sh" },
-   { "dcpp", "freedcpp" },
    { "Бюджет", "gnucash" },
-   { "nautilus", "nautilus" },
+   { "pcmanfm", "pcmanfm" },
+   { "remmina", "remmina" },
+   { "deluge", "deluge" },
+   { "revelation", "revelation" },
    { "restart", awesome.restart },
    { "quit", awesome.quit }
 }
 
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+mymainmenu = awful.menu({ items = { { "Menu", myawesomemenu, beautiful.awesome_icon },
                                     { "Debian", debian.menu.Debian_menu.Debian },
                                   }
                         })
@@ -310,8 +310,8 @@ awful.rules.rules = {
     -- Set Firefox to always map on tags number 2 of screen 1.
 --   { rule = { class = "Iceweasel" },
 --     properties = { tag = tags[1][2] } },
---   { rule = { class = "Pidgin" },
---     properties = { tag = tags[1][9] } },
+   { rule = { class = "Pidgin" },
+     properties = { tag = tags[1][9] } },
      { rule = { class = "Gnome-alsamixer" },
        properties = { tag = tags[1][6] } },
 --   { rule = { class = "Mail" },
@@ -322,8 +322,6 @@ awful.rules.rules = {
 --     properties = { tag = tags[1][6] } },
      { rule = { class = "Gitg" },
        properties = { tag = tags[1][3] } },
-     { rule = { class = "liferea" },
-       properties = { tag = tags[1][5] } },
 }
 -- }}}
 
@@ -364,7 +362,7 @@ autorunApps =
 {
 --   "pidgin",
    "/home/iv/bin/ru",
-   "kbdd",
+--   "kbdd",
 --   "nautilus --no-desktop",
 --   "iceweasel",
 --   "icedove",
