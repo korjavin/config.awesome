@@ -49,7 +49,7 @@ layouts =
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[4]) 
+    tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[2])
 end
 -- }}}
 
@@ -58,11 +58,11 @@ end
 myawesomemenu = {
    { "pidgin", "pidgin" },
    { "chrome", "google-chrome" },
+   { "iceweasel", "iceweasel" },
    { "bg", "/home/iv/.BGBillingClient/bgbilling.sh" },
    { "Бюджет", "gnucash" },
    { "pcmanfm", "pcmanfm" },
    { "remmina", "remmina" },
-   { "deluge", "deluge" },
    { "revelation", "revelation" },
    { "restart", awesome.restart },
    { "quit", awesome.quit }
@@ -218,6 +218,8 @@ globalkeys = awful.util.table.join(
     -- Prompt
     awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
     awful.key({ modkey },            "z", function () awful.util.spawn('xset dpms force standby') end),
+    awful.key({ modkey },            "g", function () awful.util.spawn('gnome-screenshot') end),
+    awful.key({ modkey },            "a", function () awful.util.spawn('gnome-calculator') end),
 
     awful.key({ modkey }, "x",
               function ()
@@ -296,32 +298,27 @@ root.keys(globalkeys)
 awful.rules.rules = {
     -- All clients will match this rule.
     { rule = { },
-      properties = { border_width = beautiful.border_width,
-                     border_color = beautiful.border_normal,
-                     focus = true,
-                     keys = clientkeys,
-                     buttons = clientbuttons } },
-    { rule = { class = "MPlayer" },
-      properties = { floating = true } },
-    { rule = { class = "pinentry" },
-      properties = { floating = true } },
---    { rule = { class = "gimp" },
---      properties = { floating = true } },
-    -- Set Firefox to always map on tags number 2 of screen 1.
---   { rule = { class = "Iceweasel" },
---     properties = { tag = tags[1][2] } },
-   { rule = { class = "Pidgin" },
-     properties = { tag = tags[1][9] } },
-     { rule = { class = "Gnome-alsamixer" },
-       properties = { tag = tags[1][6] } },
---   { rule = { class = "Mail" },
---     properties = { tag = tags[1][8] } },
---     { rule = { class = "Nautilus" },
---       properties = { tag = tags[1][6] } },
---   { rule = { class = "Smplayer" },
---     properties = { tag = tags[1][6] } },
-     { rule = { class = "Gitg" },
-       properties = { tag = tags[1][3] } },
+    properties = { border_width = beautiful.border_width,
+    border_color = beautiful.border_normal,
+    focus = true,
+    keys = clientkeys,
+    buttons = clientbuttons } },
+    { rule = { class = "Google-chrome" },
+    properties = { tag = tags[1][2] } },
+    { rule = { class = "Pidgin" },
+    properties = { tag = tags[1][9] } },
+    { rule = { class = "skype" },
+    properties = { tag = tags[1][9] } },
+    { rule = { class = "qutecom" },
+    properties = { tag = tags[1][9] } },
+    { rule = { class = "pcmanfm" },
+    properties = { tag = tags[1][6] } },
+    { rule = { class = "Gnome-alsamixer" },
+    properties = { tag = tags[1][6] } },
+    { rule = { class = "Gitg" },
+    properties = { tag = tags[1][3] } },
+    { rule = { class = "gnome-calculator" },
+    properties = { tag = tags[1][3] } },
 }
 -- }}}
 
@@ -357,17 +354,16 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 -- }}}
 
 -- Autorun programs
-autorun = true
+autorun = fakse
 autorunApps =
 {
---   "pidgin",
-   "/home/iv/bin/ru",
---   "kbdd",
---   "nautilus --no-desktop",
---   "iceweasel",
---   "icedove",
-   "gnome-alsamixer",
---   "tomboy",
+     "pidgin",
+     "skype",
+     "qutecom",
+    "x-terminal-emulator",
+     "pcmanfm",
+     "google-chrome",
+     "gnome-alsamixer",
 }
 if autorun then
    for app = 1, #autorunApps do
