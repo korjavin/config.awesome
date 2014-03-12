@@ -16,6 +16,8 @@ beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "x-terminal-emulator"
+monitor_on="/usr/bin/xrandr --output HDMI-0 --auto --output VGA-0 --mode 1280x800 --below HDMI-0"
+monitor_off="/usr/bin/xrandr --output VGA-0 --off"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -58,7 +60,6 @@ end
 myawesomemenu = {
    { "pidgin", "pidgin" },
    { "chrome", "google-chrome" },
-   { "iceweasel", "iceweasel" },
    { "bg", "/home/iv/.BGBillingClient/bgbilling.sh" },
    { "Бюджет", "gnucash" },
    { "pcmanfm", "pcmanfm" },
@@ -202,6 +203,8 @@ globalkeys = awful.util.table.join(
         end),
 
     -- Standard program
+    awful.key({ modkey, "Control" }, "t", function () awful.util.spawn(monitor_off) end),
+    awful.key({ modkey, "Shift" }, "t", function () awful.util.spawn(monitor_on) end),
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
     awful.key({ modkey, "Control" }, "r", awesome.restart),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit),
