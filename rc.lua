@@ -1,3 +1,4 @@
+require("pulseaudio")
 -- Standard awesome library
 require("awful")
 require("awful.autofocus")
@@ -16,7 +17,8 @@ beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "x-terminal-emulator"
-monitor_on="/usr/bin/xrandr --output HDMI-0 --auto --output VGA-0 --mode 1280x800 --below HDMI-0"
+--monitor_on="/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --mode 1280x800 --below HDMI-0"
+monitor_on="/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --below HDMI-0"
 monitor_off="/usr/bin/xrandr --output VGA-0 --off"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
@@ -60,6 +62,10 @@ end
 myawesomemenu = {
    { "pidgin", "pidgin" },
    { "chrome", "google-chrome" },
+   { "skype", "skype" },
+   { "qutecom", "qutecom" },
+   { "calc", "gnome-calculator" },
+   { "alsa-mixer", "gnome-alsamixer" },
    { "bg", "/home/iv/.BGBillingClient/bgbilling.sh" },
    { "Бюджет", "gnucash" },
    { "pcmanfm", "pcmanfm" },
@@ -81,6 +87,39 @@ mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
 -- {{{ Wibox
 -- Create a textclock widget
 mytextclock = awful.widget.textclock({ align = "right" })
+
+--- pulse
+    volumewidget0 = widget({
+        type = "textbox",
+        name = "volumewidget0",
+        align = "right"
+    })
+
+    volumewidget0:buttons(awful.util.table.join(
+      awful.button({ }, 4, function() pulseaudio.volumeUp0(); volumewidget0.text = pulseaudio.volumeInfo0() end),
+      awful.button({ }, 5, function() pulseaudio.volumeDown0(); volumewidget0.text = pulseaudio.volumeInfo0() end)
+    ))
+
+    volumewidget0.text = pulseaudio.volumeInfo0()
+    volumetimer = timer({ timeout = 30 })
+    volumetimer:add_signal("timeout", function() volumewidget0.text = pulseaudio.volumeInfo0() end)
+    volumetimer:start()
+
+    volumewidget1 = widget({
+        type = "textbox",
+        name = "volumewidget1",
+        align = "right"
+    })
+
+    volumewidget1:buttons(awful.util.table.join(
+      awful.button({ }, 4, function() pulseaudio.volumeUp1(); volumewidget1.text = pulseaudio.volumeInfo1() end),
+      awful.button({ }, 5, function() pulseaudio.volumeDown1(); volumewidget1.text = pulseaudio.volumeInfo1() end)
+    ))
+
+    volumewidget1.text = pulseaudio.volumeInfo1()
+    volumetimer1 = timer({ timeout = 31 })
+    volumetimer1:add_signal("timeout", function() volumewidget1.text = pulseaudio.volumeInfo1() end)
+    volumetimer1:start()
 
 -- Create a systray
 mysystray = widget({ type = "systray" })
@@ -155,9 +194,11 @@ for s = 1, screen.count() do
         },
         mylayoutbox[s],
         mytextclock,
+        volumewidget0,
+        volumewidget1,
         s == 1 and mysystray or nil,
         mytasklist[s],
-        layout = awful.widget.layout.horizontal.rightleft
+        layout = awful.widget.layout.horizontal.rightleft,
     }
 end
 -- }}}
@@ -357,7 +398,7 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 -- }}}
 
 -- Autorun programs
-autorun = fakse
+autorun = false
 autorunApps =
 {
      "pidgin",
