@@ -17,8 +17,8 @@ beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "x-terminal-emulator"
---monitor_on="/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --mode 1280x800 --below HDMI-0"
-monitor_on="/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --below HDMI-0"
+monitor_on="/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --mode 1280x800 --below HDMI-0"
+--monitor_on="/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --below HDMI-0"
 monitor_off="/usr/bin/xrandr --output VGA-0 --off"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
@@ -60,13 +60,16 @@ end
 -- {{{ Menu
 -- Create a laucher widget and a main menu
 myawesomemenu = {
+   { "rescuetime", "rescuetime" },
    { "pidgin", "pidgin" },
    { "chrome", "google-chrome" },
+   { "firefox", "/home/iv/bin/firefox" },
    { "skype", "skype" },
-   { "qutecom", "qutecom" },
+   { "skype-record", "/home/iv/Projects/skype-call-recorder/skype-call-recorder" },
+   { "empathy", "empathy" },
    { "calc", "gnome-calculator" },
-   { "alsa-mixer", "gnome-alsamixer" },
    { "bg", "/home/iv/.BGBillingClient/bgbilling.sh" },
+   { "viber", "/usr/share/viber/Viber.sh" },
    { "Бюджет", "gnucash" },
    { "pcmanfm", "pcmanfm" },
    { "remmina", "remmina" },
@@ -398,16 +401,9 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 -- }}}
 
 -- Autorun programs
-autorun = false
+autorun = true
 autorunApps =
 {
-     "pidgin",
-     "skype",
-     "qutecom",
-    "x-terminal-emulator",
-     "pcmanfm",
-     "google-chrome",
-     "gnome-alsamixer",
 }
 if autorun then
    for app = 1, #autorunApps do

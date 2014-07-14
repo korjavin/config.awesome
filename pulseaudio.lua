@@ -15,7 +15,20 @@ function volumeUp0()
     if newVolume > 65536 then
         newVolume = 65536
     end
-    io.popen("pacmd set-sink-volume 0 "..newVolume)
+    io.popen("pacmd set-sink-volume alsa_output.usb-C-Media_Electronics_Inc._Microsoft_LifeChat_LX-3000-00-LX3000.analog-stereo "..newVolume)
+    f:close()
+end
+
+function volumeDown0()
+    local step = 655 * 5
+    local f = io.popen("pacmd dump |grep 'set-sink-volume alsa_output.usb'")
+    local v = f:read()
+    local volume = tonumber(string.sub(v, string.find(v, 'x') - 1))
+    local newVolume = volume - step
+    if newVolume < 0 then
+        newVolume = 0
+    end
+    io.popen("pacmd set-sink-volume alsa_output.usb-C-Media_Electronics_Inc._Microsoft_LifeChat_LX-3000-00-LX3000.analog-stereo "..newVolume)
     f:close()
 end
 function volumeUp1()
@@ -30,19 +43,6 @@ function volumeUp1()
     io.popen("pacmd set-sink-volume 1 "..newVolume)
     f:close()
 end
-
-function volumeDown0()
-    local step = 655 * 5
-    local f = io.popen("pacmd dump |grep 'set-sink-volume alsa_output.usb'")
-    local v = f:read()
-    local volume = tonumber(string.sub(v, string.find(v, 'x') - 1))
-    local newVolume = volume - step
-    if newVolume < 0 then
-        newVolume = 0
-    end
-    io.popen("pacmd set-sink-volume 0 "..newVolume)
-    f:close()
-end
 function volumeDown1()
     local step = 655 * 5
     local f = io.popen("pacmd dump |grep 'set-sink-volume alsa_output.pci'")
@@ -52,9 +52,10 @@ function volumeDown1()
     if newVolume < 0 then
         newVolume = 0
     end
-    io.popen("pacmd set-sink-volume 1 "..newVolume)
+    io.popen("pacmd set-sink-volume 1  "..newVolume)
     f:close()
 end
+
 
 function volumeMute()
     local g = io.popen("pacmd dump |grep set-sink-mute")
