@@ -61,20 +61,24 @@ end
 -- {{{ Menu
 -- Create a laucher widget and a main menu
 myawesomemenu = {
-   { "rescuetime", "rescuetime" },
-   { "pidgin", "pidgin" },
-   { "chrome", "google-chrome" },
    { "firefox", "/home/iv/bin/firefox" },
+   { "chrome", "google-chrome" },
+   { "shutter", "shutter" },
    { "skype", "skype" },
+   { "pavucontrol", "pavucontrol" },
    { "skype-record", "/home/iv/Projects/skype-call-recorder/skype-call-recorder" },
    { "empathy", "empathy" },
    { "calc", "gnome-calculator" },
    { "bg", "/home/iv/.BGBillingClient/bgbilling.sh" },
-   { "viber", "/usr/share/viber/Viber.sh" },
+   { "viber", "/opt/viber/Viber" },
    { "Бюджет", "gnucash" },
    { "pcmanfm", "pcmanfm" },
    { "remmina", "remmina" },
    { "revelation", "revelation" },
+   { "eclipse", "wmname LG3D; /media/Space/tmp/adt-bundle-linux-x86_64-20140702/eclipse/eclipse" },
+   { "rescuetime", "rescuetime" },
+   { "audacity", "/home/iv/bin/audacity" },
+   { "pidgin", "pidgin" },
    { "restart", awesome.restart },
    { "quit", awesome.quit }
 }
@@ -366,12 +370,15 @@ awful.rules.rules = {
     focus = true,
     keys = clientkeys,
     buttons = clientbuttons } },
-    { rule = { class = "Google-chrome" },
-    properties = { tag = tags[1][2] } },
+--    { rule = { class = "Google-chrome" },
+--    properties = { tag = tags[1][2] } },
     { rule = { class = "Pidgin" },
     properties = { tag = tags[1][9] } },
+--  callback = function(c)
+--        c:tags({tags[1][9], tags[2][9]})
+--    end },
     { rule = { class = "skype" },
-    properties = { tag = tags[1][9] } },
+    properties = { tag = tags[1][8] } },
     { rule = { class = "qutecom" },
     properties = { tag = tags[1][9] } },
     { rule = { class = "pcmanfm" },
@@ -380,8 +387,14 @@ awful.rules.rules = {
     properties = { tag = tags[1][6] } },
     { rule = { class = "Gitg" },
     properties = { tag = tags[1][3] } },
-    { rule = { class = "gnome-calculator" },
-    properties = { tag = tags[1][3] } },
+    { rule = { class = "Viber" },
+    properties = { tag = tags[1][8] } },
+    { rule = { class = "Pavucontrol" },
+    properties = { tag = tags[1][6] } },
+    { rule = { class = "empathy" },
+    properties = { tag = tags[1][8] } },
+    { rule = { class = "Pcmanfm" },
+    properties = { tag = tags[1][6] } },
 }
 -- }}}
 
@@ -420,9 +433,24 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 autorun = true
 autorunApps =
 {
+    "rescuetime",
+    "firefox",
+    "pavucontrol",
+    "pidgin",
+    "pcmanfm",
+    "shutter"
 }
+function run_once(cmd)
+  findme = cmd
+  firstspace = cmd:find(" ")
+  if firstspace then
+    findme = cmd:sub(0, firstspace-1)
+  end
+  awful.util.spawn_with_shell("pgrep -u $USER -x " .. findme .. " > /dev/null || (" .. cmd .. ")")
+end
+
 if autorun then
    for app = 1, #autorunApps do
-       awful.util.spawn(autorunApps[app])
+       run_once(autorunApps[app])
    end
 end
