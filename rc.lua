@@ -104,11 +104,12 @@ mytextclock = awful.widget.textclock({ align = "right" })
     })
 
     pintaskwidget0:buttons(awful.util.table.join(
-      awful.button({ }, 1, function()  pintask.Start(); pintaskwidget0.text = " RUN " end),
-      awful.button({ }, 3, function()  pintask.Stop() ; pintaskwidget0.text = " STP " end)
+      awful.button({ }, 1, function()  pintask.Start(); pintaskwidget0.text = pintask.Status() end),
+      awful.button({ }, 3, function()  pintask.Stop() ; pintaskwidget0.text = pintask.Status() end)
     ))
 
-    pintaskwidget0.text = " --- "
+--    pintaskwidget0.text = " --- "
+    pintaskwidget0.text = pintask.Status();
 
 --- pulse
     volumewidget0 = widget({
@@ -284,11 +285,11 @@ globalkeys = awful.util.table.join(
 
     -- Prompt
     awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
-    awful.key({ modkey },            "z", function () awful.util.spawn('xset dpms force standby') end),
+    awful.key({ modkey,"Shift","Control" },            "z", function () awful.util.spawn('systemctl suspend') end),
     awful.key({ modkey },            "g", function () awful.util.spawn('gnome-screenshot') end),
     awful.key({ modkey },            "a", function () awful.util.spawn('gnome-calculator') end),
 
-    awful.key({ modkey }, "x",
+    awful.key({ modkey, "Shift" }, "x",
               function ()
                   awful.prompt.run({ prompt = "Run Lua code: " },
                   mypromptbox[mouse.screen].widget,
