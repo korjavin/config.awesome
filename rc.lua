@@ -104,12 +104,22 @@ mytextclock = awful.widget.textclock({ align = "right" })
     })
 
     pintaskwidget0:buttons(awful.util.table.join(
-      awful.button({ }, 1, function()  pintask.Start(); pintaskwidget0.text = pintask.Status() end),
+      awful.button({ }, 1, function()
+          local newThread = coroutine.wrap(function()
+              pintask.Start();
+              pintaskwidget0.text = pintask.Status()
+            end)
+        newThread()
+      end),
       awful.button({ }, 3, function()  pintask.Stop() ; pintaskwidget0.text = pintask.Status() end)
     ))
 
---    pintaskwidget0.text = " --- "
+--    pintaskwidget0.text = " UNK "
     pintaskwidget0.text = pintask.Status();
+
+    pintasktimer1 = timer({ timeout = 120 })
+    pintasktimer1:add_signal("timeout", function() pintaskwidget0.text = pintask.Status() end)
+    pintasktimer1:start()
 
 --- pulse
     volumewidget0 = widget({
