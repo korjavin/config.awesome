@@ -87,6 +87,40 @@ mymainmenu = awful.menu({ items = { { "Menu", myawesomemenu, beautiful.awesome_i
                                     { "Debian", debian.menu.Debian_menu.Debian },
                                   }
                         })
+function context_menu(c)
+    if c.minimized then                               --меняем текст элемента меню в зависимости от состояния
+         cli_min = "Развернуть"
+    else
+         cli_min = "Свернуть"
+    end
+    if c.ontop then
+         cli_top = "★ Поверх всех"
+     else
+         cli_top = "  Поверх всех"
+    end
+    if awful.client.floating.get(c) then
+         cli_float = "★ Floating"
+     else
+         cli_float = "  Floating"
+     end
+     --создаем список тегов(в виде подменю), для перемещения клиента на другой тег
+     tag_menu = { }
+     for i,t in pairs(tags.names) do
+          if not tags[c.screen][i].selected then            --удаляем из списка выбранный тег/теги
+              table.insert(tag_menu, { tostring(t), function() awful.client.movetotag(tags[c.screen][i]) end } )
+          end
+     end
+     taskmenu = awful.menu({ items = { { "Переместить на", tag_menu },
+                                       { cli_min, function() c.minimized = not c.minimized end },
+                                       { "Fullscreen", function() c.fullscreen = not c.fullscreen end, beautiful.layout_fullscreen },
+                                       { cli_float,  function() awful.client.floating.toggle(c) end },
+                                       { cli_top, function() c.ontop = not c.ontop end },
+                                       { "Закрыть", function() c:kill() end }},
+                                     width = 150
+                                     }  )
+     taskmenu:show()
+     return taskmenu
+end
 
 mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
                                      menu = mymainmenu })
@@ -179,14 +213,22 @@ mytasklist.buttons = awful.util.table.join(
                                               client.focus = c
                                               c:raise()
                                           end),
-                     awful.button({ }, 3, function ()
-                                              if instance then
-                                                  instance:hide()
-                                                  instance = nil
-                                              else
-                                                  instance = awful.menu.clients({ width=250 })
-                                              end
-                                          end),
+--                     awful.button({ }, 3, function ()
+--                                              if instance then
+--                                                  instance:hide()
+--                                                  instance = nil
+--                                              else
+--                                                  instance = awful.menu.clients({ width=250 })
+--                                              end
+--                                          end),
+                    awful.button({ }, 3, function (c)
+                              if instance1 then
+                                  instance1:hide()
+                                  instance1 = nil
+                               else
+                                  instance1 = context_menu(c)
+                               end
+                             end ),
                      awful.button({ }, 5, function ()
                                               awful.client.focus.byidx(1)
                                               if client.focus then client.focus:raise() end
