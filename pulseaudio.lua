@@ -100,3 +100,10 @@ function volumeInfo1()
     g:close()
     return "pci: "..volume
 end
+function SwitchTo(i)
+    local f = io.popen("/home/iv/bin/pa_switch.sh " .. i )
+    local v = f:read()
+    f:close()
+end
+
+
