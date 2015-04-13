@@ -75,7 +75,8 @@ myawesomemenu = {
    { "pcmanfm", "pcmanfm" },
    { "remmina", "remmina" },
    { "revelation", "revelation" },
-   { "eclipse", "wmname LG3D; /media/Space/tmp/adt-bundle-linux-x86_64-20140702/eclipse/eclipse" },
+--   { "eclipse", "wmname LG3D; /media/Space/tmp/adt-bundle-linux-x86_64-20140702/eclipse/eclipse" },
+   { "vlc tv" , "vlc .play.m3u" },
    { "rescuetime", "rescuetime" },
    { "audacity", "/home/iv/bin/audacity" },
    { "pidgin", "pidgin" },
@@ -114,12 +115,12 @@ mytextclock = awful.widget.textclock({ align = "right" })
       awful.button({ }, 3, function()  pintask.Stop() ; pintaskwidget0.text = pintask.Status() end)
     ))
 
---    pintaskwidget0.text = " UNK "
-    pintaskwidget0.text = pintask.Status();
+    pintaskwidget0.text = " UNK "
+--    pintaskwidget0.text = pintask.Status();
 
-    pintasktimer1 = timer({ timeout = 120 })
-    pintasktimer1:add_signal("timeout", function() pintaskwidget0.text = pintask.Status() end)
-    pintasktimer1:start()
+---    pintasktimer1 = timer({ timeout = 120 })
+---    pintasktimer1:add_signal("timeout", function() pintaskwidget0.text = pintask.Status() end)
+---    pintasktimer1:start()
 
 --- pulse
     volumewidget0 = widget({
@@ -296,7 +297,7 @@ globalkeys = awful.util.table.join(
     -- Prompt
     awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
     awful.key({ modkey,"Shift","Control" },            "z", function () awful.util.spawn('systemctl suspend') end),
-    awful.key({ modkey },            "g", function () awful.util.spawn('gnome-screenshot') end),
+    awful.key({ modkey },            "g", function () awful.util.spawn('/usr/bin/shutter -f') end),
     awful.key({ modkey },            "a", function () awful.util.spawn('gnome-calculator') end),
 
     awful.key({ modkey, "Shift" }, "x",

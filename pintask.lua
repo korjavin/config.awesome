@@ -33,5 +33,8 @@ function Status()
     else
         sts= " STP "
     end
+    if sts=="" then
+        sts=" UNK "
+    end
     return sts
 end
