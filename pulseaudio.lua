@@ -15,7 +15,7 @@ function volumeUp0()
     if newVolume > 65536 then
         newVolume = 65536
     end
-    io.popen("pacmd set-sink-volume alsa_output.usb-C-Media_Electronics_Inc._Microsoft_LifeChat_LX-3000-00-LX3000.analog-stereo "..newVolume)
+    io.popen("pacmd set-sink-volume alsa_output.usb-C-Media_Electronics_Inc._Microsoft_LifeChat_LX-3000-00.analog-stereo "..newVolume)
     f:close()
 end
 
@@ -28,7 +28,7 @@ function volumeDown0()
     if newVolume < 0 then
         newVolume = 0
     end
-    io.popen("pacmd set-sink-volume alsa_output.usb-C-Media_Electronics_Inc._Microsoft_LifeChat_LX-3000-00-LX3000.analog-stereo "..newVolume)
+    io.popen("pacmd set-sink-volume alsa_output.usb-C-Media_Electronics_Inc._Microsoft_LifeChat_LX-3000-00.analog-stereo "..newVolume)
     f:close()
 end
 function volumeUp1()
