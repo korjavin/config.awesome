@@ -451,10 +451,14 @@ autorun = true
 autorunApps =
 {
     "rescuetime",
-    "firefox",
+    "x-www-browser",
     "pavucontrol",
     "pidgin",
+    "workrave",
+    "/opt/viber/Viber",
     "pcmanfm",
+    "/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --mode 1280x800 --below HDMI-0",
+    "/home/iv/bin/xflux -l 60 -g 60 -k 5000",
     "shutter"
 }
 function run_once(cmd)
