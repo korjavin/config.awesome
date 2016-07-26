@@ -148,8 +148,8 @@ mytextclock = awful.widget.textclock({ align = "right" })
     })
 
     volumewidget1:buttons(awful.util.table.join(
-      awful.button({ }, 1, function() pulseaudio.SwitchTo(2); end),
-      awful.button({ }, 3, function() pulseaudio.SwitchTo(3); end),
+      awful.button({ }, 1, function() pulseaudio.SwitchTo(1); end),
+      awful.button({ }, 3, function() pulseaudio.SwitchTo(1); end),
       awful.button({ }, 4, function() pulseaudio.volumeUp1(); volumewidget1.text = pulseaudio.volumeInfo1() end),
       awful.button({ }, 5, function() pulseaudio.volumeDown1(); volumewidget1.text = pulseaudio.volumeInfo1() end)
     ))
