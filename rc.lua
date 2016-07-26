@@ -1,5 +1,5 @@
 require("pulseaudio")
-require("pintask")
+--require("pintask")
 -- Standard awesome library
 require("awful")
 require("awful.autofocus")
@@ -98,29 +98,29 @@ mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
 mytextclock = awful.widget.textclock({ align = "right" })
 
 --- pintask
-    pintaskwidget0 = widget({
-        type = "textbox",
-        name = "pintaskwidget0",
-        align = "right"
-    })
-
-    pintaskwidget0:buttons(awful.util.table.join(
-      awful.button({ }, 1, function()
-          local newThread = coroutine.wrap(function()
-              pintask.Start();
-              pintaskwidget0.text = pintask.Status()
-            end)
-        newThread()
-      end),
-      awful.button({ }, 3, function()  pintask.Stop() ; pintaskwidget0.text = pintask.Status() end)
-    ))
-
-    pintaskwidget0.text = " UNK "
---    pintaskwidget0.text = pintask.Status();
-
----    pintasktimer1 = timer({ timeout = 120 })
----    pintasktimer1:add_signal("timeout", function() pintaskwidget0.text = pintask.Status() end)
----    pintasktimer1:start()
+---    pintaskwidget0 = widget({
+---        type = "textbox",
+---        name = "pintaskwidget0",
+---        align = "right"
+---    })
+---
+---    pintaskwidget0:buttons(awful.util.table.join(
+---      awful.button({ }, 1, function()
+---          local newThread = coroutine.wrap(function()
+---              pintask.Start();
+---              pintaskwidget0.text = pintask.Status()
+---            end)
+---        newThread()
+---      end),
+---      awful.button({ }, 3, function()  pintask.Stop() ; pintaskwidget0.text = pintask.Status() end)
+---    ))
+---
+---    pintaskwidget0.text = " UNK "
+-----  pintaskwidget0.text = pintask.Status();
+---
+---   pintasktimer1 = timer({ timeout = 1201 })
+---   pintasktimer1:add_signal("timeout", function() pintaskwidget0.text = pintask.Status() end)
+---   pintasktimer1:start()
 
 --- pulse
     volumewidget0 = widget({
@@ -234,7 +234,7 @@ for s = 1, screen.count() do
         mytextclock,
         volumewidget0,
         volumewidget1,
-        pintaskwidget0,
+--        pintaskwidget0,
         s == 1 and mysystray or nil,
         mytasklist[s],
         layout = awful.widget.layout.horizontal.rightleft,
