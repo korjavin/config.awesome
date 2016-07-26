@@ -300,9 +300,10 @@ globalkeys = awful.util.table.join(
 
     -- Prompt
     awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
-    awful.key({ modkey,"Shift","Control" },            "z", function () awful.util.spawn('systemctl suspend') end),
+    awful.key({ modkey,"Shift","Control" },            "z", function () awful.util.spawn('sudo systemctl suspend') end),
     awful.key({ modkey },            "g", function () awful.util.spawn('/usr/bin/shutter -f') end),
     awful.key({ modkey },            "a", function () awful.util.spawn('gnome-calculator') end),
+    awful.key({ modkey },            "s", function () awful.util.spawn('pavucontrol') end),
 
     awful.key({ modkey, "Shift" }, "x",
               function ()
