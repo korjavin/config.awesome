@@ -61,14 +61,11 @@ end
 -- {{{ Menu
 -- Create a laucher widget and a main menu
 myawesomemenu = {
-   { "firefox", "/home/iv/bin/firefox" },
+--   { "firefox", "/home/iv/bin/firefox" },
    { "chrome", "google-chrome" },
-   { "shutter", "shutter" },
-   { "skype", "skype" },
+   { "skype", "/opt/skype/skype" },
    { "pavucontrol", "pavucontrol" },
    { "skype-record", "/home/iv/Projects/skype-call-recorder/skype-call-recorder" },
-   { "empathy", "empathy" },
-   { "calc", "gnome-calculator" },
    { "bg", "/home/iv/.BGBillingClient/bgbilling.sh" },
    { "viber", "/opt/viber/Viber" },
    { "Бюджет", "gnucash" },
@@ -78,8 +75,10 @@ myawesomemenu = {
 --   { "eclipse", "wmname LG3D; /media/Space/tmp/adt-bundle-linux-x86_64-20140702/eclipse/eclipse" },
    { "vlc tv" , "vlc .play.m3u" },
    { "rescuetime", "rescuetime" },
-   { "audacity", "/home/iv/bin/audacity" },
+   { "audacity", "audacity" },
    { "pidgin", "pidgin" },
+   { "tor", "/opt/tor-browser_en-US/Browser/start-tor-browser" },
+   { "Telegram", "/opt/Telegram/Telegram" },
    { "restart", awesome.restart },
    { "quit", awesome.quit }
 }
