@@ -395,22 +395,38 @@ awful.rules.rules = {
 --    end },
     { rule = { class = "skype" },
     properties = { tag = tags[1][8] } },
-    { rule = { class = "qutecom" },
-    properties = { tag = tags[1][9] } },
     { rule = { class = "pcmanfm" },
-    properties = { tag = tags[1][6] } },
-    { rule = { class = "Gnome-alsamixer" },
     properties = { tag = tags[1][6] } },
     { rule = { class = "Gitg" },
     properties = { tag = tags[1][3] } },
     { rule = { class = "Viber" },
     properties = { tag = tags[1][8] } },
-    { rule = { class = "Pavucontrol" },
-    properties = { tag = tags[1][6] } },
+--    { rule = { class = "Pavucontrol" },
+--    properties = { tag = tags[1][6] } },
     { rule = { class = "empathy" },
     properties = { tag = tags[1][8] } },
     { rule = { class = "Pcmanfm" },
     properties = { tag = tags[1][6] } },
+    { rule = { class = "Pcmanfm" },
+    properties = { tag = tags[1][6] } },
+    -- WM_CLASS(STRING) = "ficsfindopp"
+    -- NAME(STRING) = "Find opponent"
+    { rule = { name = "Find opponent" },
+    properties = { floating = true },
+           callback = function (c)
+             awful.placement.centered(c,nil)
+           end
+},
+    -- WM_NAME(STRING) = "Scid: Analysis Engine..."
+    { rule = { name = "Scid: Analysis Engine..." },
+    properties = { floating = true },
+           callback = function (c)
+             awful.placement.centered(c,nil)
+           end
+       },
+
+
+
 }
 -- }}}
 
