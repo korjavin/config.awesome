@@ -37,8 +37,8 @@ modkey = "Mod4"
 layouts =
 {
     -- awful.layout.suit.floating,
-    -- awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
+    awful.layout.suit.tile,
+    -- awful.layout.suit.tile.left,
     -- awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top
     -- awful.layout.suit.fair,
@@ -63,7 +63,7 @@ end
 -- {{{ Menu
 -- Create a laucher widget and a main menu
 myawesomemenu = {
---   { "firefox", "/home/iv/bin/firefox" },
+   { "firefox", "/home/iv/bin/firefox" },
    { "chrome", "google-chrome" },
    { "skype", "/opt/skype/skype" },
    { "pavucontrol", "pavucontrol" },
@@ -431,6 +431,12 @@ awful.rules.rules = {
              awful.placement.centered(c,nil)
            end
        },
+    { rule = { name = "Configure FICS" },
+    properties = { floating = true },
+           callback = function (c)
+             awful.placement.centered(c,nil)
+           end
+       },
 
 
 
@@ -472,12 +478,12 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 autorun = true
 autorunApps =
 {
-    "rescuetime",
-    "x-www-browser",
+    -- "rescuetime",
+    -- "x-www-browser",
     "pavucontrol",
-    "pidgin",
+    -- "pidgin",
     "workrave",
-    "/opt/viber/Viber",
+    -- "/opt/viber/Viber",
     "pcmanfm",
     "/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --mode 1280x800 --below HDMI-0",
     "/home/iv/bin/xflux -l 60 -g 60 -k 5000",
