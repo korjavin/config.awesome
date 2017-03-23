@@ -300,9 +300,14 @@ globalkeys = awful.util.table.join(
     -- Prompt
     awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
     awful.key({ modkey,"Shift","Control" },            "z", function () awful.util.spawn('sudo systemctl suspend') end),
-    awful.key({ modkey },            "g", function () awful.util.spawn('/usr/bin/shutter -f') end),
+    awful.key({ modkey },            "v", function () awful.util.spawn('/usr/bin/shutter -f') end),
     awful.key({ modkey },            "a", function () awful.util.spawn('gnome-calculator') end),
     awful.key({ modkey },            "s", function () awful.util.spawn('pavucontrol') end),
+    awful.key({ modkey },            "t", function () pulseaudio.volumeUp1(); volumewidget1.text = pulseaudio.volumeInfo1() end),
+    awful.key({ modkey },            "g", function () pulseaudio.volumeDown1(); volumewidget1.text = pulseaudio.volumeInfo1() end),
+    awful.key({ modkey },            "y", function () pulseaudio.volumeUp0(); volumewidget0.text = pulseaudio.volumeInfo0() end),
+    awful.key({ modkey },            "h", function () pulseaudio.volumeDown0(); volumewidget0.text = pulseaudio.volumeInfo0() end),
+
 
     awful.key({ modkey, "Shift" }, "x",
               function ()
