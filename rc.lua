@@ -17,7 +17,9 @@ require("debian.menu")
 beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "x-terminal-emulator"
+-- terminal = "x-terminal-emulator"
+terminal = "dbus-launch gnome-terminal"
+
 monitor_on="/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --mode 1280x800 --below HDMI-0"
 --monitor_on="/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --below HDMI-0"
 monitor_off="/usr/bin/xrandr --output VGA-0 --off"
