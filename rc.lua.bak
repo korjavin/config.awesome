@@ -1,22 +1,19 @@
 -- Standard awesome library
-require("awful")
+wibox=require("wibox")
+awful=require("awful")
 require("awful.autofocus")
 require("awful.rules")
 -- Theme handling library
-require("beautiful")
+beautiful=require("beautiful")
 -- Notification library
 require("naughty")
 
 -- Load Debian menu entries
 require("debian.menu")
 
-local vicious = require("vicious")
-
-
---
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
-beautiful.init("/usr/share/awesome/themes/default/theme.lua")
+-- beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "x-terminal-emulator"
@@ -24,7 +21,9 @@ editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
 monitor1="/usr/bin/xrandr --output LVDS1 --mode 1366x768  --output VGA1 --off"
+--monitor2="/usr/bin/xrandr --output LVDS1 --off --output VGA1 --mode 1920x1080"
 monitor2="/usr/bin/xrandr --output LVDS1 --off --output VGA1 --mode 1024x768"
+sleep1="/usr/bin/sudo /usr/sbin/pm-hibernate"
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -36,18 +35,18 @@ modkey = "Mod4"
 -- Table of layouts to cover with awful.layout.inc, order matters.
 layouts =
 {
-    -- awful.layout.suit.floating,
+    awful.layout.suit.floating,
     awful.layout.suit.tile,
-    -- awful.layout.suit.tile.left,
-    awful.layout.suit.tile.bottom
-    -- awful.layout.suit.tile.top,
-    -- awful.layout.suit.fair,
-    -- awful.layout.suit.fair.horizontal,
-    -- awful.layout.suit.spiral,
-    -- awful.layout.suit.spiral.dwindle,
-    -- awful.layout.suit.max,
-    -- awful.layout.suit.max.fullscreen,
-    -- awful.layout.suit.magnifier
+    awful.layout.suit.tile.left,
+    awful.layout.suit.tile.bottom,
+    awful.layout.suit.tile.top,
+    awful.layout.suit.fair,
+    awful.layout.suit.fair.horizontal,
+    awful.layout.suit.spiral,
+    awful.layout.suit.spiral.dwindle,
+    awful.layout.suit.max,
+    awful.layout.suit.max.fullscreen,
+    awful.layout.suit.magnifier
 }
 -- }}}
 
@@ -56,22 +55,17 @@ layouts =
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[1])
+    tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[4]) 
 end
 -- }}}
 
 -- {{{ Menu
 -- Create a laucher widget and a main menu
 myawesomemenu = {
-   { "pidgin", "pidgin" },
-   { "slack", "slack" },
-   { "telegram", "/opt/Telegram/Telegram" },
-   { "firefox", "/opt/firefox/firefox" },
-   -- { "iceweasel", "iceweasel" },
    { "chrome", "google-chrome" },
-   -- { "icedove", "icedove" },
-   { "bg", "/home/iv/.BGBillingClient/bgbilling.sh" },
-   -- { "Бюджет", "gnucash" },
+   { "firefox", "/opt/firefox/firefox" },
+   { "vlc", "vlc" },
+   { "screen", "/bin/sh /home/iv/x.sh" },
    { "restart", awesome.restart },
    { "quit", awesome.quit }
 }
@@ -81,7 +75,9 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
                                   }
                         })
 
-mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
+myicon = wibox.widget.imagebox()
+--myicon:set_image(beautiful.awesome_icon)
+mylauncher = awful.widget.launcher({ -- image = myicon,
                                      menu = mymainmenu })
 -- }}}
 
@@ -90,7 +86,8 @@ mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
 mytextclock = awful.widget.textclock({ align = "right" })
 
 -- Create a systray
-mysystray = widget({ type = "systray" })
+--mysystray = widget({ type = "systray" })
+mysystray = wibox.widget.systray()
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -130,51 +127,12 @@ mytasklist.buttons = awful.util.table.join(
                                               awful.client.focus.byidx(-1)
                                               if client.focus then client.focus:raise() end
                                           end))
-    wifi = widget({ type = "textbox" })
-    vicious.register(wifi, vicious.widgets.wifi, "${ssid} ${linp}", 17, "wlan0" )
 
-    batwidget = awful.widget.progressbar()
-    batwidget:set_width(12)
-    batwidget:set_height(16)
-    batwidget:set_vertical(true)
-    batwidget:set_background_color("#494B4F")
-    batwidget:set_border_color(nil)
-    batwidget:set_color("#AECF96")
-    batwidget:set_gradient_colors({ "#AECF96", "#88A175", "#FF5656" })
-    vicious.register(batwidget, vicious.widgets.bat, "$2", 61, "BAT0")
-    -- {{{ Volume level
-volicon = widget({ type = "imagebox" })
-volicon.image = image(beautiful.widget_vol)
--- Initialize widgets
-volbar    = awful.widget.progressbar()
-volwidget = widget({ type = "textbox" })
--- Progressbar properties
-volbar:set_vertical(true):set_ticks(true)
-volbar:set_height(12):set_width(8):set_ticks_size(2)
-volbar:set_background_color(beautiful.fg_off_widget)
-volbar:set_gradient_colors({ beautiful.fg_widget,
-   beautiful.fg_center_widget, beautiful.fg_end_widget
-}) -- Enable caching
-vicious.cache(vicious.widgets.volume)
--- Register widgets
-vicious.register(volbar,    vicious.widgets.volume,  "$1",  2, "PCM")
-vicious.register(volwidget, vicious.widgets.volume, " $1%", 2, "PCM")
--- Register buttons
-volbar.widget:buttons(awful.util.table.join(
-   awful.button({ }, 1, function () exec("gnome-alsamixer") end),
-   awful.button({ }, 4, function () exec("amixer -q set PCM 1dB+", false) end),
-   awful.button({ }, 5, function () exec("amixer -q set PCM 1dB-", false) end)
-)) -- Register assigned buttons
-volwidget:buttons(volbar.widget:buttons())
--- }}}
--- {{{ Reusable separator
-separator = widget({ type = "imagebox" })
-separator.image = image(beautiful.widget_sep)
--- }}}
+
 
 for s = 1, screen.count() do
     -- Create a promptbox for each screen
-    mypromptbox[s] = awful.widget.prompt({ layout = awful.widget.layout.horizontal.leftright })
+    mypromptbox[s] = awful.widget.prompt({ layout = wibox.layout.fixed.vertical() })
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     mylayoutbox[s] = awful.widget.layoutbox(s)
@@ -184,14 +142,13 @@ for s = 1, screen.count() do
                            awful.button({ }, 4, function () awful.layout.inc(layouts, 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(layouts, -1) end)))
     -- Create a taglist widget
-    mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.label.all, mytaglist.buttons)
+--    mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.label.all, mytaglist.buttons)
+--   mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.filter.all, mytaglist.buttons)
 
     -- Create a tasklist widget
     mytasklist[s] = awful.widget.tasklist(function(c)
                                               return awful.widget.tasklist.label.currenttags(c, s)
                                           end, mytasklist.buttons)
-
-
 
     -- Create the wibox
     mywibox[s] = awful.wibox({ position = "top", screen = s })
@@ -204,22 +161,19 @@ for s = 1, screen.count() do
             layout = awful.widget.layout.horizontal.leftright
         },
         mylayoutbox[s],
-            batwidget,
-            wifi,
         mytextclock,
         s == 1 and mysystray or nil,
---        separator, volwidget,  volbar.widget, volicon,
         mytasklist[s],
-        layout = awful.widget.layout.horizontal.rightleft,
+        layout = awful.widget.layout.horizontal.rightleft
     }
 end
 -- }}}
 
 -- {{{ Mouse bindings
 root.buttons(awful.util.table.join(
-    awful.button({ }, 3, function () mymainmenu:toggle() end)
-    -- awful.button({ }, 5, awful.tag.viewnext),
-    -- awful.button({ }, 4, awful.tag.viewprev)
+    awful.button({ }, 3, function () mymainmenu:toggle() end),
+    awful.button({ }, 5, awful.tag.viewnext),
+    awful.button({ }, 4, awful.tag.viewprev)
 ))
 -- }}}
 
@@ -254,23 +208,14 @@ globalkeys = awful.util.table.join(
                 client.focus:raise()
             end
         end),
-    -- all minimized clients are restored
-    awful.key({ modkey, "Shift"   }, "n",
-        function()
-            local tag = awful.tag.selected()
-                for i=1, #tag:clients() do
-                    tag:clients()[i].minimized=false
-                    tag:clients()[i]:redraw()
-            end
-        end),
 
     -- Standard program
-    -- awful.key({ modkey, "Control" }, "t", function () awful.util.spawn(monitor1) end),
-    -- awful.key({ modkey, "Shift" }, "t", function () awful.util.spawn(monitor2) end),
-    awful.key({ modkey, "Shift" }, "z", function () awful.util.spawn('sudo systemctl hibernate') end),
+    awful.key({ modkey, "Control" }, "t", function () awful.util.spawn(monitor1) end),
+    awful.key({ modkey, "Shift" }, "t", function () awful.util.spawn(monitor2) end),
+    awful.key({ modkey  }, "F4", function () awful.util.spawn(sleep1) end),
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
     awful.key({ modkey, "Control" }, "r", awesome.restart),
-    -- awful.key({ modkey, "Shift"   }, "q", awesome.quit),
+    awful.key({ modkey, "Shift"   }, "q", awesome.quit),
 
     awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)    end),
     awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)    end),
@@ -282,15 +227,15 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
 
     -- Prompt
-    awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end)
+    awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
 
-    -- awful.key({ modkey }, "x",
-    --           function ()
-    --               awful.prompt.run({ prompt = "Run Lua code: " },
-    --               mypromptbox[mouse.screen].widget,
-    --               awful.util.eval, nil,
-    --               awful.util.getdir("cache") .. "/history_eval")
-    --           end)
+    awful.key({ modkey }, "x",
+              function ()
+                  awful.prompt.run({ prompt = "Run Lua code: " },
+                  mypromptbox[mouse.screen].widget,
+                  awful.util.eval, nil,
+                  awful.util.getdir("cache") .. "/history_eval")
+              end)
 )
 
 clientkeys = awful.util.table.join(
@@ -350,6 +295,7 @@ end
 
 clientbuttons = awful.util.table.join(
     awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
+    awful.button({ }, 8, function (c) c:kill()  end),
     awful.button({ modkey }, 1, awful.mouse.client.move),
     awful.button({ modkey }, 3, awful.mouse.client.resize))
 
@@ -373,7 +319,7 @@ awful.rules.rules = {
 --    { rule = { class = "gimp" },
 --      properties = { floating = true } },
     -- Set Firefox to always map on tags number 2 of screen 1.
-     { rule = { class = "Firefox" },
+     { rule = { class = "Iceweasel" },
        properties = { tag = tags[1][2] } },
      { rule = { class = "Pidgin" },
        properties = { tag = tags[1][9] } },
@@ -399,12 +345,12 @@ client.add_signal("manage", function (c, startup)
 --    -- awful.titlebar.add(c, { modkey = modkey })
 --
 --    -- Enable sloppy focus
-    c:add_signal("mouse::enter", function(c)
-        if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-            and awful.client.focus.filter(c) then
-            client.focus = c
-        end
-    end)
+--    c:add_signal("mouse::enter", function(c)
+--        if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
+--             and awful.client.focus.filter(c) then
+--            client.focus = c
+        --end
+--    end)
 
     if not startup then
         -- Set the windows at the slave,
@@ -424,12 +370,11 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 -- }}}
 
 -- Autorun programs
-autorun = true
+autorun = false
 autorunApps =
 {
    "kbdd",
-   "gnome-alsamixer",
-   "/usr/bin/redshift -l 80:80"
+   "gnome-alsamixer"
 }
 if autorun then
    for app = 1, #autorunApps do
