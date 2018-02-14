@@ -301,7 +301,7 @@ globalkeys = awful.util.table.join(
 
     -- Prompt
     awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
-    awful.key({ modkey,"Shift","Control" },            "z", function () awful.util.spawn('sudo systemctl suspend') end),
+    awful.key({ modkey,"Shift","Control" },            "z", function () awful.util.spawn('sleep 60 && sudo systemctl suspend') end),
     awful.key({ modkey },            "v", function () awful.util.spawn('/usr/bin/shutter -f') end),
     awful.key({ modkey },            "a", function () awful.util.spawn('gnome-calculator') end),
     awful.key({ modkey },            "s", function () awful.util.spawn('pavucontrol') end),
@@ -309,6 +309,8 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey },            "g", function () pulseaudio.volumeDown1(); volumewidget1.text = pulseaudio.volumeInfo1() end),
     awful.key({ modkey },            "y", function () pulseaudio.volumeUp0(); volumewidget0.text = pulseaudio.volumeInfo0() end),
     awful.key({ modkey },            "h", function () pulseaudio.volumeDown0(); volumewidget0.text = pulseaudio.volumeInfo0() end),
+    awful.key({ modkey, "Shift" },            "t", function () pulseaudio.SwitchTo(1)  end),
+    awful.key({ modkey, "Shift" },            "y", function () pulseaudio.SwitchTo(0)  end),
 
 
     awful.key({ modkey, "Shift" }, "x",
@@ -329,6 +331,9 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
     awful.key({ modkey, "Shift"   }, "r",      function (c) c:redraw()                       end),
     awful.key({ modkey,           }, "n",      function (c) c.minimized = not c.minimized    end),
+    -- awful.key({modkey             }, "p",      function() awful.util.spawn('xrandr --output HDMI-0 --scale 1x1') end),
+    -- awful.key({modkey,"Shift"     }, "p",      function() awful.util.spawn('xrandr --output HDMI-0 --scale 0.7x0.7') end),
+    -- awful.key({modkey,"Shift"     }, "p",      function()  foggy.menu end),
     awful.key({ modkey,           }, "m",
         function (c)
             c.maximized_horizontal = not c.maximized_horizontal
@@ -479,15 +484,17 @@ autorun = true
 autorunApps =
 {
     -- "rescuetime",
-    -- "x-www-browser",
-    "pavucontrol",
+    "x-www-browser",
+    -- "pavucontrol",
     -- "pidgin",
     "workrave",
+    "/opt/Telegram/Telegram",
     -- "/opt/viber/Viber",
     "pcmanfm",
-    "/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --mode 1280x800 --below HDMI-0",
-    "/home/iv/bin/xflux -l 60 -g 60 -k 5000",
-    "shutter"
+    "/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --auto --below HDMI-0",
+    -- "/home/iv/bin/xflux -l 60 -g 60 -k 5000",
+    "/usr/bin/redshift -l 60:60",
+    -- "shutter"
 }
 function run_once(cmd)
   findme = cmd
