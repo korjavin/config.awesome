@@ -18,6 +18,10 @@ require("awful.hotkeys_popup.keys")
 local debian = require("debian.menu")
 local has_fdo, freedesktop = pcall(require, "freedesktop")
 
+
+vicious = require("vicious")
+
+
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -42,6 +46,19 @@ do
     end)
 end
 -- }}}
+--
+
+-- cpu widget
+cpuwidget = wibox.widget.textbox()
+vicious.register(cpuwidget, vicious.widgets.cpu, 'cpu: $1%<span color="#cccccc"> | </span>')
+
+-- ram widget
+memwidget = wibox.widget.textbox()
+vicious.register(memwidget, vicious.widgets.mem, 'mem: $1%<span color="#cccccc"> | </span>', 13)
+
+-- network widget
+netwidget = wibox.widget.textbox()
+vicious.register(netwidget, vicious.widgets.net, '<span color="#CC9933">down: ${eth0 down_kb} kB/s</span> <span color="#7F9F7F"> up: ${eth0 up_kb} kB/s</span><span color="#cccccc"> | </span>', 3)
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
@@ -242,6 +259,9 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             mykeyboardlayout,
+            cpuwidget,
+            memwidget,
+            netwidget,
             wibox.widget.systray(),
             mytextclock,
             s.mylayoutbox,
@@ -591,3 +611,6 @@ end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
+awful.spawn("/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --auto --below HDMI-0")
+awful.spawn("redshift -l 60:60")
+awful.spawn("workrave")
