@@ -69,6 +69,10 @@ vicious.register(memwidget, vicious.widgets.mem, 'mem: $1%<span color="#cccccc">
 netwidget = wibox.widget.textbox()
 vicious.register(netwidget, vicious.widgets.net, '<span color="#CC9933">down: ${wlp3s0 down_kb} kB/s</span> <span color="#7F9F7F"> up: ${wlp3s0 up_kb} kB/s</span><span color="#cccccc"> | </span>', 3)
 
+-- thermal widget
+
+thermwidget = wibox.widget.textbox()
+vicious.register(thermwidget, vicious.widgets.thermal, "cpu $1 °C", 30,  "thermal_zone0")
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
@@ -273,6 +277,7 @@ awful.screen.connect_for_each_screen(function(s)
             memwidget,
             netwidget,
             mybattery,
+            thermwidget,
             wibox.widget.systray(),
             mytextclock,
             s.mylayoutbox,
