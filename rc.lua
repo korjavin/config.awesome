@@ -622,6 +622,8 @@ end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
-awful.spawn("/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --auto --below HDMI-0")
+-- awful.spawn("/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --auto --below HDMI-0")
+-- awful.spawn("/usr/bin/xrandr --output LVDS-1 --auto --primary --output VGA-1 --auto --below LVDS-1")
+
 awful.spawn("redshift -l 60:60")
 awful.spawn("workrave")
