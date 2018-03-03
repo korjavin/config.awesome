@@ -47,6 +47,15 @@ do
 end
 -- }}}
 --
+--     -- Battery widget
+    mybattery = wibox.widget.textbox()
+    vicious.register(mybattery, vicious.widgets.bat, "$2%", 17, "BAT0")
+    mybattery:buttons(awful.util.table.join(
+        awful.button({ }, 1, function()
+            naughty.notify({ title = "Battery indicator",
+                             text = vicious.call(vicious.widgets.bat, "Remaining time: $3", "BAT0") })
+        end)
+    ))
 
 -- cpu widget
 cpuwidget = wibox.widget.textbox()
@@ -58,7 +67,8 @@ vicious.register(memwidget, vicious.widgets.mem, 'mem: $1%<span color="#cccccc">
 
 -- network widget
 netwidget = wibox.widget.textbox()
-vicious.register(netwidget, vicious.widgets.net, '<span color="#CC9933">down: ${eth0 down_kb} kB/s</span> <span color="#7F9F7F"> up: ${eth0 up_kb} kB/s</span><span color="#cccccc"> | </span>', 3)
+vicious.register(netwidget, vicious.widgets.net, '<span color="#CC9933">down: ${wlp3s0 down_kb} kB/s</span> <span color="#7F9F7F"> up: ${wlp3s0 up_kb} kB/s</span><span color="#cccccc"> | </span>', 3)
+
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
@@ -262,6 +272,7 @@ awful.screen.connect_for_each_screen(function(s)
             cpuwidget,
             memwidget,
             netwidget,
+            mybattery,
             wibox.widget.systray(),
             mytextclock,
             s.mylayoutbox,
