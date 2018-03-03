@@ -126,7 +126,7 @@ end
 -- Create a launcher widget and a main menu
 myawesomemenu = {
    { "hotkeys", function() return false, hotkeys_popup.show_help end},
-   { "firefox", "/home/iv/bin/firefox" },
+   { "firefox", "/opt/firefox/firefox" },
    { "chrome", "google-chrome" },
    { "bg", "/home/iv/.BGBillingClient/bgbilling.sh" },
    { "pcmanfm", "pcmanfm" },
