@@ -463,7 +463,27 @@ clientkeys = gears.table.join(
             c.maximized_horizontal = not c.maximized_horizontal
             c:raise()
         end ,
-        {description = "(un)maximize horizontally", group = "client"})
+        {description = "(un)maximize horizontally", group = "client"}),
+           -- Volume Keys
+           awful.key({}, "XF86AudioLowerVolume", function ()
+               awful.util.spawn("amixer -q er 5%-", false)
+           end),
+           awful.key({}, "XF86AudioRaiseVolume", function ()
+               awful.util.spawn("amixer -q sset Master 5%+", false)
+           end),
+           awful.key({}, "XF86AudioMute", function ()
+               awful.util.spawn("amixer set Master 1+ toggle", false)
+           end),
+           -- Media Keys
+           awful.key({}, "XF86AudioPlay", function()
+               awful.util.spawn("audacious -t", false)
+           end),
+           awful.key({}, "XF86AudioNext", function()
+               awful.util.spawn("audacious -f ", false)
+           end),
+           awful.key({}, "XF86AudioPrev", function()
+               awful.util.spawn("audacious -r", false)
+           end)
 )
 
 -- Bind all key numbers to tags.
