@@ -178,16 +178,7 @@ mytextclock = wibox.widget.textclock()
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
-                    awful.button({ }, 1, function(t)
-                      local i = awful.tag.getidx(t)
-                      for s in screen do
-                          local tag = s.tags[i]
-                          if tag then
-                              tag:view_only()
-                          end
-                      end
-                        -- t:view_only()
-                    end),
+                    awful.button({ }, 1, function(t) t:view_only() end),
                     awful.button({ modkey }, 1, function(t)
                                               if client.focus then
                                                   client.focus:move_to_tag(t)
@@ -199,8 +190,8 @@ local taglist_buttons = gears.table.join(
                                                   client.focus:toggle_tag(t)
                                               end
                                           end),
-                    awful.button({ }, 5, function(t) for s in screen do awful.tag.viewnext(s) end end),
-                    awful.button({ }, 4, function(t) for s in screen do awful.tag.viewprev(s) end end)
+                    awful.button({ }, 5, function(t) awful.tag.viewnext(t.screen) end),
+                    awful.button({ }, 4, function(t) awful.tag.viewprev(t.screen) end)
                 )
 
 local tasklist_buttons = gears.table.join(
@@ -313,19 +304,9 @@ globalkeys = gears.table.join(
               {description="calc", group="awesome"}),
     awful.key({ modkey,           }, "g",      function () awful.spawn("shutter -f") end,
               {description="shutter", group="awesome"}),
-    awful.key({ modkey,           }, "Left",  -- awful.tag.viewprev,
-                  function ()
-                      for s in screen do
-                          awful.tag.viewprev(s)
-                      end
-                  end,
+    awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
               {description = "view previous", group = "tag"}),
-    awful.key({ modkey,           }, "Right", --  awful.tag.viewnext,
-                  function ()
-                      for s in screen do
-                          awful.tag.viewnext(s)
-                      end
-                  end,
+    awful.key({ modkey,           }, "Right",  awful.tag.viewnext,
               {description = "view next", group = "tag"}),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
               {description = "go back", group = "tag"}),
@@ -496,13 +477,11 @@ for i = 1, 9 do
         -- View tag only.
         awful.key({ modkey }, "#" .. i + 9,
                   function ()
-                      -- local screen = awful.screen.focused()
-                      for screen in screen do
-                          local tag = screen.tags[i]
-                          if tag then
-                              tag:view_only()
-                          end
-                      end
+                        local screen = awful.screen.focused()
+                        local tag = screen.tags[i]
+                        if tag then
+                           tag:view_only()
+                        end
                   end,
                   {description = "view tag #"..i, group = "tag"}),
         -- Toggle tag display.
