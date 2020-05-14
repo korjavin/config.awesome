@@ -67,19 +67,21 @@ vicious.register(memwidget, vicious.widgets.mem, 'mem: $1%<span color="#cccccc">
 
 -- network widget
 netwidget = wibox.widget.textbox()
-vicious.register(netwidget, vicious.widgets.net, '<span color="#CC9933">down: ${wlp3s0 down_kb} kB/s</span> <span color="#7F9F7F"> up: ${wlp3s0 up_kb} kB/s</span><span color="#cccccc"> | </span>', 3)
+vicious.register(netwidget, vicious.widgets.net, '<span color="#CC9933">down: ${wlp2s0 down_kb} kB/s</span> <span color="#7F9F7F"> up: ${wlp2s0 up_kb} kB/s</span><span color="#cccccc"> | </span>', 3)
 
 -- thermal widget
 
 thermwidget = wibox.widget.textbox()
-vicious.register(thermwidget, vicious.widgets.thermal, "cpu $1 °C", 30,  "thermal_zone0")
+vicious.register(thermwidget, vicious.widgets.thermal, "th: $1 °C", 30,  "thermal_zone0")
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "x-terminal-emulator"
+-- terminal = "kitty"
+terminal = "/home/iv/Projects/kitty/linux-package/bin/kitty"
+-- terminal = "x-terminal-emulator"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -234,12 +236,13 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
+
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     set_wallpaper(s)
 
     -- Each screen has its own tag table.
-    awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+    awful.tag({ "1" }, s, awful.layout.layouts[1])
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -284,6 +287,8 @@ awful.screen.connect_for_each_screen(function(s)
         },
     }
 end)
+
+awful.tag({ "2", "3", "4", "5", "6", "7", "8", "9" }, awful.screen.primary, awful.layout.layouts[1])
 -- }}}
 
 -- {{{ Mouse bindings
@@ -300,10 +305,10 @@ globalkeys = gears.table.join(
               {description="show help", group="awesome"}),
     awful.key({ modkey,           }, "s",      function () awful.spawn("pavucontrol") end,
               {description="pavucontrol", group="awesome"}),
+    awful.key({ modkey, Shift           }, "z",      function () awful.spawn("slock") end,
+              {description="slock", group="awesome"}),
     awful.key({ modkey,           }, "a",      function () awful.spawn("gnome-calculator") end,
               {description="calc", group="awesome"}),
-    awful.key({ modkey,           }, "g",      function () awful.spawn("shutter -f") end,
-              {description="shutter", group="awesome"}),
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
               {description = "view previous", group = "tag"}),
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext,
@@ -353,6 +358,8 @@ globalkeys = gears.table.join(
               {description = "reload awesome", group = "awesome"}),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit,
               {description = "quit awesome", group = "awesome"}),
+    awful.key({ modkey, "Shift"   }, "z", function () awful.spawn("~/bin/xoff.sh") end,
+              {description = "monitor off", group = "awesome"}),
 
     awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end,
               {description = "increase master width factor", group = "layout"}),
@@ -399,6 +406,7 @@ globalkeys = gears.table.join(
     -- Menubar
     awful.key({ modkey }, "p", function() menubar.show() end,
               {description = "show the menubar", group = "launcher"})
+
 )
 
 clientkeys = gears.table.join(
@@ -652,5 +660,5 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- awful.spawn("/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --auto --below HDMI-0")
 -- awful.spawn("/usr/bin/xrandr --output LVDS-1 --auto --primary --output VGA-1 --auto --below LVDS-1")
 
-awful.spawn("redshift -l 60:60")
+awful.spawn("redshift -l 55:37")
 awful.spawn("workrave")
