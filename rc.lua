@@ -263,19 +263,23 @@ awful.screen.connect_for_each_screen(function(s)
                 {
                     {
                         id     = 'text_role',
-                        font   = 'sans bold 9',
                         widget = wibox.widget.textbox,
                     },
-                    margins = { left = 8, right = 8, top = 2, bottom = 2 },
-                    widget  = wibox.container.margin,
+                    left   = 8,
+                    right  = 8,
+                    top    = 1,
+                    bottom = 1,
+                    widget = wibox.container.margin,
                 },
-                layout = wibox.layout.fixed.horizontal,
+                id     = 'background_role',
+                shape  = function(cr, width, height)
+                    gears.shape.rounded_rect(cr, width, height, 4)
+                end,
+                widget = wibox.container.background,
             },
-            id     = 'background_role',
-            shape  = function(cr, width, height)
-                gears.shape.rounded_rect(cr, width, height, 4)
-            end,
-            widget = wibox.container.background,
+            top    = 2,
+            bottom = 2,
+            widget = wibox.container.margin,
         },
     }
 
@@ -296,8 +300,10 @@ awful.screen.connect_for_each_screen(function(s)
                             id     = 'icon_role',
                             widget = wibox.widget.imagebox,
                         },
-                        margins = { top = 2, bottom = 2, right = 4 },
-                        widget  = wibox.container.margin,
+                        top    = 2,
+                        bottom = 2,
+                        right  = 4,
+                        widget = wibox.container.margin,
                     },
                     {
                         id     = 'text_role',
@@ -305,8 +311,11 @@ awful.screen.connect_for_each_screen(function(s)
                     },
                     layout = wibox.layout.fixed.horizontal,
                 },
-                margins = { left = 8, right = 8, top = 2, bottom = 2 },
-                widget  = wibox.container.margin,
+                left   = 8,
+                right  = 8,
+                top    = 1,
+                bottom = 1,
+                widget = wibox.container.margin,
             },
             id     = 'background_role',
             shape  = function(cr, width, height)
