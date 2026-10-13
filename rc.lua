@@ -46,41 +46,16 @@ do
     end)
 end
 -- }}}
---
---     -- Battery widget
-    mybattery = wibox.widget.textbox()
-    vicious.register(mybattery, vicious.widgets.bat, "$2%", 17, "BAT0")
-    mybattery:buttons(awful.util.table.join(
-        awful.button({ }, 1, function()
-            naughty.notify({ title = "Battery indicator",
-                             text = vicious.call(vicious.widgets.bat, "Remaining time: $3", "BAT0") })
-        end)
-    ))
-
--- cpu widget
-cpuwidget = wibox.widget.textbox()
-vicious.register(cpuwidget, vicious.widgets.cpu, 'cpu: $1%<span color="#cccccc"> | </span>')
-
--- ram widget
-memwidget = wibox.widget.textbox()
-vicious.register(memwidget, vicious.widgets.mem, 'mem: $1%<span color="#cccccc"> | </span>', 13)
-
--- network widget
-netwidget = wibox.widget.textbox()
-vicious.register(netwidget, vicious.widgets.net, '<span color="#CC9933">down: ${wlp2s0 down_kb} kB/s</span> <span color="#7F9F7F"> up: ${wlp2s0 up_kb} kB/s</span><span color="#cccccc"> | </span>', 3)
-
--- thermal widget
-
-thermwidget = wibox.widget.textbox()
-vicious.register(thermwidget, vicious.widgets.thermal, "th: $1 °C", 30,  "thermal_zone0")
+-- Load modern pill widgets
+local widgets = require("widgets")
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
--- terminal = "kitty"
-terminal = "/home/iv/Projects/kitty/linux-package/bin/kitty"
+terminal = "kitty"
+-- terminal = "/home/iv/Projects/kitty/linux-package/bin/kitty"
 -- terminal = "x-terminal-emulator"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
@@ -132,16 +107,8 @@ end
 -- Create a launcher widget and a main menu
 myawesomemenu = {
    { "hotkeys", function() return false, hotkeys_popup.show_help end},
-   { "firefox", "/opt/firefox/firefox" },
-   { "chrome", "google-chrome" },
-   { "bg", "/home/iv/.BGBillingClient/bgbilling.sh" },
-   { "pcmanfm", "pcmanfm" },
-   { "remmina", "remmina" },
-   { "revelation", "revelation" },
-   { "vlc tv" , "vlc .play.m3u" },
-   { "tor", "/opt/tor-browser_en-US/Browser/start-tor-browser" },
-   { "Telegram", "/opt/Telegram/Telegram" },
-   { "restart", awesome.restart },
+   -- { "firefox", "/opt/firefox/firefox" },
+   -- { "lens", "/home/iv/bin/lens.sh" },
 { "quit", awesome.quit }
 }
 
@@ -242,7 +209,11 @@ awful.screen.connect_for_each_screen(function(s)
     set_wallpaper(s)
 
     -- Each screen has its own tag table.
-    awful.tag({ "1" }, s, awful.layout.layouts[1])
+    if s == screen.primary then
+        awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+    else
+        awful.tag({ "1" }, s, awful.layout.layouts[1])
+    end
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -275,20 +246,19 @@ awful.screen.connect_for_each_screen(function(s)
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            mykeyboardlayout,
-            cpuwidget,
-            memwidget,
-            netwidget,
-            mybattery,
-            thermwidget,
+            spacing = 6,
+            widgets.keyboard,
+            widgets.cpu,
+            widgets.mem,
+            widgets.net,
+            widgets.therm,
+            widgets.bat,
             wibox.widget.systray(),
-            mytextclock,
+            widgets.clock,
             s.mylayoutbox,
         },
     }
 end)
-
-awful.tag({ "2", "3", "4", "5", "6", "7", "8", "9" }, awful.screen.primary, awful.layout.layouts[1])
 -- }}}
 
 -- {{{ Mouse bindings
@@ -305,8 +275,12 @@ globalkeys = gears.table.join(
               {description="show help", group="awesome"}),
     awful.key({ modkey,           }, "s",      function () awful.spawn("pavucontrol") end,
               {description="pavucontrol", group="awesome"}),
-    awful.key({ modkey, Shift           }, "z",      function () awful.spawn("slock") end,
-              {description="slock", group="awesome"}),
+    awful.key({ modkey, "Shift" }, "z",      function () awful.spawn("systemctl suspend") end,
+              {description="suspend & lock", group="awesome"}),
+    awful.key({ modkey, "Shift" }, "d",      function () awful.spawn("xrandr --output DP-1 --auto --primary --output eDP-1 --off" ) end, 
+              {description="dock", group="awesome"}),
+    awful.key({ modkey, "Shift"}, "u",      function () awful.spawn("xrandr --output eDP-1 --auto --primary --output DP-1 --off") end,
+              {description="undock", group="awesome"}),
     awful.key({ modkey,           }, "a",      function () awful.spawn("gnome-calculator") end,
               {description="calc", group="awesome"}),
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
@@ -405,7 +379,37 @@ globalkeys = gears.table.join(
     --           {description = "lua execute prompt", group = "awesome"}),
     -- Menubar
     awful.key({ modkey }, "p", function() menubar.show() end,
-              {description = "show the menubar", group = "launcher"})
+              {description = "show the menubar", group = "launcher"}),
+
+    -- Volume Keys
+    awful.key({}, "XF86AudioLowerVolume", function ()
+        awful.spawn("amixer -q sset Master 5%-", false)
+    end, {description = "lower volume", group = "media"}),
+    awful.key({}, "XF86AudioRaiseVolume", function ()
+        awful.spawn("amixer -q sset Master 5%+", false)
+    end, {description = "raise volume", group = "media"}),
+    awful.key({}, "XF86AudioMute", function ()
+        awful.spawn("amixer -q sset Master toggle", false)
+    end, {description = "mute audio", group = "media"}),
+
+    -- Brightness Keys
+    awful.key({}, "XF86MonBrightnessDown", function ()
+        awful.spawn("brightnessctl -q set 5%- -n", false)
+    end, {description = "decrease brightness", group = "media"}),
+    awful.key({}, "XF86MonBrightnessUp", function ()
+        awful.spawn("brightnessctl -q set +5%", false)
+    end, {description = "increase brightness", group = "media"}),
+
+    -- Media Keys
+    awful.key({}, "XF86AudioPlay", function()
+        awful.spawn("audacious -t", false)
+    end, {description = "play/pause", group = "media"}),
+    awful.key({}, "XF86AudioNext", function()
+        awful.spawn("audacious -f", false)
+    end, {description = "next track", group = "media"}),
+    awful.key({}, "XF86AudioPrev", function()
+        awful.spawn("audacious -r", false)
+    end, {description = "previous track", group = "media"})
 
 )
 
@@ -416,7 +420,7 @@ clientkeys = gears.table.join(
             c:raise()
         end,
         {description = "toggle fullscreen", group = "client"}),
-    awful.key({ modkey,     }, "c",      function (c) c:kill()                         end,
+    awful.key({ modkey, "Shift"     }, "c",      function (c) c:kill()                         end,
               {description = "close", group = "client"}),
     awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end,
               {description = "close", group = "client"}),
@@ -454,27 +458,7 @@ clientkeys = gears.table.join(
             c.maximized_horizontal = not c.maximized_horizontal
             c:raise()
         end ,
-        {description = "(un)maximize horizontally", group = "client"}),
-           -- Volume Keys
-           awful.key({}, "XF86AudioLowerVolume", function ()
-               awful.util.spawn("amixer -q er 5%-", false)
-           end),
-           awful.key({}, "XF86AudioRaiseVolume", function ()
-               awful.util.spawn("amixer -q sset Master 5%+", false)
-           end),
-           awful.key({}, "XF86AudioMute", function ()
-               awful.util.spawn("amixer set Master 1+ toggle", false)
-           end),
-           -- Media Keys
-           awful.key({}, "XF86AudioPlay", function()
-               awful.util.spawn("audacious -t", false)
-           end),
-           awful.key({}, "XF86AudioNext", function()
-               awful.util.spawn("audacious -f ", false)
-           end),
-           awful.key({}, "XF86AudioPrev", function()
-               awful.util.spawn("audacious -r", false)
-           end)
+        {description = "(un)maximize horizontally", group = "client"})
 )
 
 -- Bind all key numbers to tags.
@@ -583,9 +567,14 @@ awful.rules.rules = {
       }, properties = { titlebars_enabled = true }
     },
 
-    -- Set Firefox to always map on the tag named "2" on screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { screen = 1, tag = "2" } },
+    { rule = { class = "Slack" },
+      properties = { screen = 1, tag = "8" } },
+    { rule = { class = "Telegram" },
+      properties = { screen = 1, tag = "9" } },
+    { rule = { class = "Revelation" },
+      properties = { screen = 1, tag = "3" } },
+    { rule = { class = "pcmanfm" },
+      properties = { screen = 1, tag = "6" } },
 }
 -- }}}
 
@@ -660,5 +649,8 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- awful.spawn("/usr/bin/xrandr --output HDMI-0 --auto --primary --output VGA-0 --auto --below HDMI-0")
 -- awful.spawn("/usr/bin/xrandr --output LVDS-1 --auto --primary --output VGA-1 --auto --below LVDS-1")
 
-awful.spawn("redshift -l 55:37")
-awful.spawn("workrave")
+-- awful.spawn("redshift -l 55:37")
+-- awful.spawn("workrave")
+
+
+beautiful.gtk.font = "sans 20"
