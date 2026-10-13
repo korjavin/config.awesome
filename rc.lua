@@ -77,6 +77,49 @@ beautiful.border_width  = 1
 beautiful.border_focus  = "#81A1C1"
 beautiful.border_normal = "#000000"
 
+-- Notification styling (Nord palette)
+beautiful.notification_font         = "Fira Code Nerd Font 10"
+beautiful.notification_bg           = "#2E3440"
+beautiful.notification_fg           = "#ECEFF4"
+beautiful.notification_border_color = "#81A1C1"
+beautiful.notification_border_width = 1
+beautiful.notification_shape        = function(cr, w, h)
+    gears.shape.rounded_rect(cr, w, h, 8)
+end
+beautiful.notification_icon_size    = 48
+beautiful.notification_margin       = 12
+beautiful.notification_max_width    = 420
+beautiful.notification_max_height   = 160
+
+-- Naughty presets and defaults
+naughty.config.padding = 8
+naughty.config.spacing = 8
+naughty.config.defaults.timeout = 5
+naughty.config.defaults.position = "top_right"
+naughty.config.presets.normal.bg = "#2E3440"
+naughty.config.presets.normal.fg = "#ECEFF4"
+naughty.config.presets.low.bg    = "#2E3440"
+naughty.config.presets.low.fg    = "#D8DEE9"
+naughty.config.presets.critical.bg = "#BF616A"
+naughty.config.presets.critical.fg = "#ECEFF4"
+naughty.config.presets.critical.timeout = 8
+
+-- Intercept and normalize notifications (prevent oversized icons, resolve icon names)
+naughty.config.notify_callback = function(args)
+    if args.icon and type(args.icon) == "string" and not args.icon:match("^/") then
+        local resolved = menubar.utils.lookup_icon(args.icon)
+        if resolved then
+            args.icon = resolved
+        else
+            args.icon = nil
+        end
+    end
+    if args.icon_size and args.icon_size > 48 then
+        args.icon_size = 48
+    end
+    return args
+end
+
 -- This is used later as the default terminal and editor to run.
 terminal = "kitty"
 -- terminal = "/home/iv/Projects/kitty/linux-package/bin/kitty"

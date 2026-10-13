@@ -359,12 +359,43 @@ widgets.bat:buttons(gears.table.join(
 ))
 
 -- ============================================================================
--- 6. Clock Widget (󰥔)
+-- 6. Clock Widget (󰥔) & Calendar Popup
 -- ============================================================================
 local clock_widget = wibox.widget.textclock(
     "<span font='" .. icon_font .. "' color='" .. colors.cyan .. "'>󰥔</span> <span font='" .. text_font .. "' color='" .. colors.fg_text .. "'>%a %d %b, %H:%M</span>"
 )
 widgets.clock = make_pill(clock_widget)
+
+local month_calendar = awful.widget.calendar_popup.month({
+    start_sunday = false,
+    spacing      = 3,
+    margin       = 4,
+    font         = "FiraCode Nerd Font 10",
+    style_month  = {
+        border_width = 1,
+        border_color = colors.blue,
+        bg_color     = colors.bg_pill,
+        shape        = function(cr, w, h) gears.shape.rounded_rect(cr, w, h, 6) end,
+        padding      = 6,
+    },
+    style_header = {
+        fg_color = colors.cyan,
+        markup   = function(t) return "<b>" .. t .. "</b>" end,
+    },
+    style_weekday = {
+        fg_color = colors.yellow,
+    },
+    style_normal = {
+        fg_color = colors.fg_text,
+    },
+    style_focus = {
+        fg_color = colors.bg_pill,
+        bg_color = colors.cyan,
+        shape    = function(cr, w, h) gears.shape.rounded_rect(cr, w, h, 4) end,
+    },
+})
+month_calendar:attach(widgets.clock, "tr", { on_hover = false })
+widgets.calendar = month_calendar
 
 -- ============================================================================
 -- 7. Keyboard Layout Widget (󰌌)
