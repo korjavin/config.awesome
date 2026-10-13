@@ -185,7 +185,8 @@ local menu_terminal = { "open terminal", terminal }
 if has_fdo then
     mymainmenu = freedesktop.menu.build({
         before = { menu_awesome },
-        after =  { menu_terminal }
+        after =  { menu_terminal },
+        skip_items = { "Syncthing", "Jupyter" },
     })
 else
     mymainmenu = awful.menu({
