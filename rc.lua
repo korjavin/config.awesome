@@ -252,6 +252,7 @@ awful.screen.connect_for_each_screen(function(s)
             widgets.mem,
             widgets.net,
             widgets.therm,
+            widgets.volume,
             widgets.bat,
             wibox.widget.systray(),
             widgets.clock,
@@ -381,24 +382,29 @@ globalkeys = gears.table.join(
     awful.key({ modkey }, "p", function() menubar.show() end,
               {description = "show the menubar", group = "launcher"}),
 
-    -- Volume Keys
+    -- Volume Keys (with pactl & OSD)
     awful.key({}, "XF86AudioLowerVolume", function ()
-        awful.spawn("amixer -q sset Master 5%-", false)
+        widgets.change_volume(-5)
     end, {description = "lower volume", group = "media"}),
     awful.key({}, "XF86AudioRaiseVolume", function ()
-        awful.spawn("amixer -q sset Master 5%+", false)
+        widgets.change_volume(5)
     end, {description = "raise volume", group = "media"}),
     awful.key({}, "XF86AudioMute", function ()
-        awful.spawn("amixer -q sset Master toggle", false)
+        widgets.change_volume("toggle")
     end, {description = "mute audio", group = "media"}),
 
-    -- Brightness Keys
+    -- Brightness Keys (with OSD)
     awful.key({}, "XF86MonBrightnessDown", function ()
-        awful.spawn("brightnessctl -q set 5%- -n", false)
+        widgets.change_brightness(-5)
     end, {description = "decrease brightness", group = "media"}),
     awful.key({}, "XF86MonBrightnessUp", function ()
-        awful.spawn("brightnessctl -q set +5%", false)
+        widgets.change_brightness(5)
     end, {description = "increase brightness", group = "media"}),
+
+    -- Screenshots
+    awful.key({}, "Print", function ()
+        awful.spawn("flameshot gui")
+    end, {description = "take screenshot", group = "launcher"}),
 
     -- Media Keys
     awful.key({}, "XF86AudioPlay", function()

@@ -381,4 +381,135 @@ local kbd_box = wibox.widget {
 }
 widgets.keyboard = make_pill(kbd_box)
 
+-- ============================================================================
+-- 8. Volume Widget (󰕾 / 󰝟) & OSD
+-- ============================================================================
+local vol_text = wibox.widget {
+    align  = "center",
+    valign = "center",
+    widget = wibox.widget.textbox,
+}
+local vol_box = wibox.container.constraint(vol_text, "exact", 50)
+widgets.volume = make_pill(vol_box)
+
+local vol_tooltip = awful.tooltip {
+    objects = { widgets.volume },
+    mode    = "outside",
+    align   = "top",
+}
+
+local osd_notification = nil
+function widgets.show_osd(osd_type, val, is_mute)
+    local icon, title, progress_str
+    if osd_type == "volume" then
+        title = "Громкость"
+        if is_mute then
+            icon = "󰝟"
+            progress_str = "MUTE"
+        else
+            icon = val > 50 and "󰕾" or (val > 0 and "󰖀" or "󰕿")
+            progress_str = val .. "%"
+        end
+    elseif osd_type == "brightness" then
+        title = "Яркость"
+        icon = "󰃠"
+        progress_str = val .. "%"
+    end
+
+    local text = string.format(
+        "<span font='%s 14'>%s</span>  <span font='%s 12' font_weight='bold'>%s</span>",
+        icon_font, icon, text_font, progress_str
+    )
+
+    osd_notification = naughty.notify {
+        title = title,
+        text = text,
+        timeout = 1.5,
+        replaces_id = osd_notification and osd_notification.id or nil,
+        position = "top_middle",
+    }
+end
+
+function widgets.parse_volume(stdout, show_osd)
+    local vol = tonumber(stdout:match("(%d+)%%")) or 0
+    local is_mute = stdout:match("Mute:%s+(%w+)") == "yes"
+
+    local icon = "󰕾"
+    local color = colors.cyan
+    if is_mute then
+        icon = "󰝟"
+        color = colors.red
+    elseif vol <= 25 then
+        icon = "󰕿"
+    elseif vol <= 60 then
+        icon = "󰖀"
+    end
+
+    vol_text:set_markup(string.format(
+        "<span font='%s' color='%s'>%s</span> <span font='%s' color='%s'>%s</span>",
+        icon_font, color, icon,
+        text_font, colors.fg_text,
+        is_mute and "MUTE" or string.format("%d%%", vol)
+    ))
+
+    vol_tooltip:set_text(string.format(
+        "Громкость: %s\nСтатус: %s\nЛКМ: Mute | Скролл: Регулировка\nПКМ: pavucontrol",
+        vol .. "%", is_mute and "Выключен" or "Включен"
+    ))
+
+    if show_osd then
+        widgets.show_osd("volume", vol, is_mute)
+    end
+end
+
+function widgets.update_volume(show_osd)
+    awful.spawn.easy_async_with_shell(
+        "pactl get-sink-volume @DEFAULT_SINK@ && pactl get-sink-mute @DEFAULT_SINK@",
+        function(stdout)
+            widgets.parse_volume(stdout, show_osd)
+        end
+    )
+end
+
+function widgets.change_volume(step)
+    local cmd
+    if step == "toggle" then
+        cmd = "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+    elseif step > 0 then
+        cmd = "pactl set-sink-mute @DEFAULT_SINK@ 0 && pactl set-sink-volume @DEFAULT_SINK@ +" .. step .. "%"
+    else
+        cmd = "pactl set-sink-mute @DEFAULT_SINK@ 0 && pactl set-sink-volume @DEFAULT_SINK@ -" .. math.abs(step) .. "%"
+    end
+    awful.spawn.easy_async_with_shell(
+        cmd .. " && pactl get-sink-volume @DEFAULT_SINK@ && pactl get-sink-mute @DEFAULT_SINK@",
+        function(stdout)
+            widgets.parse_volume(stdout, true)
+        end
+    )
+end
+
+function widgets.change_brightness(step)
+    local cmd = step > 0 and ("brightnessctl -q set +" .. step .. "%") or ("brightnessctl -q set " .. math.abs(step) .. "%- -n")
+    awful.spawn.easy_async_with_shell(cmd .. " && brightnessctl -m", function(stdout)
+        local pct = stdout:match(",([%d]+)%%,")
+        if pct then
+            widgets.show_osd("brightness", tonumber(pct))
+        end
+    end)
+end
+
+widgets.volume:buttons(gears.table.join(
+    awful.button({}, 1, function() widgets.change_volume("toggle") end),
+    awful.button({}, 3, function() awful.spawn("pavucontrol") end),
+    awful.button({}, 4, function() widgets.change_volume(5) end),
+    awful.button({}, 5, function() widgets.change_volume(-5) end)
+))
+
+widgets.update_volume(false)
+gears.timer {
+    timeout = 10,
+    autostart = true,
+    callback = function() widgets.update_volume(false) end,
+}
+
 return widgets
