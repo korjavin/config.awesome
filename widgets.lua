@@ -60,10 +60,15 @@ end
 widgets.make_pill = make_pill
 
 -- ============================================================================
--- 1. CPU Widget ()
+-- 1. CPU Widget ()
 -- ============================================================================
-local cpu_text = wibox.widget.textbox()
-widgets.cpu = make_pill(cpu_text)
+local cpu_text = wibox.widget {
+    align  = "center",
+    valign = "center",
+    widget = wibox.widget.textbox,
+}
+local cpu_box = wibox.container.constraint(cpu_text, "exact", 44)
+widgets.cpu = make_pill(cpu_box)
 
 local cpu_tooltip = awful.tooltip {
     objects = { widgets.cpu },
@@ -91,7 +96,7 @@ vicious.register(cpu_text, vicious.widgets.cpu, function(widget, args)
     cpu_tooltip:set_text(tip)
 
     return string.format(
-        "<span font='%s' color='%s'></span> <span font='%s' color='%s'>%d%%</span>",
+        "<span font='%s' color='%s'></span> <span font='%s' color='%s'>%d%%</span>",
         icon_font, color, text_font, colors.fg_text, usage
     )
 end, 2)
@@ -105,8 +110,13 @@ widgets.cpu:buttons(gears.table.join(
 -- ============================================================================
 -- 2. Memory Widget (󰍛)
 -- ============================================================================
-local mem_text = wibox.widget.textbox()
-widgets.mem = make_pill(mem_text)
+local mem_text = wibox.widget {
+    align  = "center",
+    valign = "center",
+    widget = wibox.widget.textbox,
+}
+local mem_box = wibox.container.constraint(mem_text, "exact", 44)
+widgets.mem = make_pill(mem_box)
 
 local mem_tooltip = awful.tooltip {
     objects = { widgets.mem },
@@ -150,10 +160,38 @@ widgets.mem:buttons(gears.table.join(
 ))
 
 -- ============================================================================
--- 3. Network Widget ( / )
+-- 3. Network Widget ( / ) - Fixed width, zero jitter
 -- ============================================================================
-local net_text = wibox.widget.textbox()
-widgets.net = make_pill(net_text)
+local net_down_text = wibox.widget {
+    align  = "left",
+    valign = "center",
+    widget = wibox.widget.textbox,
+}
+
+local net_up_text = wibox.widget {
+    align  = "left",
+    valign = "center",
+    widget = wibox.widget.textbox,
+}
+
+local net_box = wibox.widget {
+    {
+        net_down_text,
+        strategy = "exact",
+        width    = 58,
+        widget   = wibox.container.constraint,
+    },
+    {
+        net_up_text,
+        strategy = "exact",
+        width    = 58,
+        widget   = wibox.container.constraint,
+    },
+    spacing = 6,
+    layout  = wibox.layout.fixed.horizontal,
+}
+
+widgets.net = make_pill(net_box)
 
 local net_tooltip = awful.tooltip {
     objects = { widgets.net },
@@ -162,14 +200,16 @@ local net_tooltip = awful.tooltip {
 }
 
 local function format_speed(kb)
-    if kb >= 1024 then
+    if kb >= 1024 * 1024 then
+        return string.format("%.1fG", kb / (1024 * 1024))
+    elseif kb >= 1024 then
         return string.format("%.1fM", kb / 1024)
     else
         return string.format("%.0fK", kb)
     end
 end
 
-vicious.register(net_text, vicious.widgets.net, function(widget, args)
+vicious.register(net_down_text, vicious.widgets.net, function(widget, args)
     -- Auto-detect active interface (Wi-Fi or Ethernet)
     local iface = "wlp2s0"
     if not args["{" .. iface .. " carrier}"] or args["{" .. iface .. " carrier}"] == 0 then
@@ -190,18 +230,27 @@ vicious.register(net_text, vicious.widgets.net, function(widget, args)
         iface, down_kb, up_kb
     ))
 
-    return string.format(
-        "<span font='%s' color='%s'></span> <span font='%s' color='%s'>%s</span>  <span font='%s' color='%s'></span> <span font='%s' color='%s'>%s</span>",
-        icon_font, colors.green, text_font, colors.fg_text, format_speed(down_kb),
+    net_up_text:set_markup(string.format(
+        "<span font='%s' color='%s'></span> <span font='%s' color='%s'>%s</span>",
         icon_font, colors.cyan, text_font, colors.fg_text, format_speed(up_kb)
+    ))
+
+    return string.format(
+        "<span font='%s' color='%s'></span> <span font='%s' color='%s'>%s</span>",
+        icon_font, colors.green, text_font, colors.fg_text, format_speed(down_kb)
     )
 end, 2)
 
 -- ============================================================================
 -- 4. Thermal Widget ()
 -- ============================================================================
-local therm_text = wibox.widget.textbox()
-widgets.therm = make_pill(therm_text)
+local therm_text = wibox.widget {
+    align  = "center",
+    valign = "center",
+    widget = wibox.widget.textbox,
+}
+local therm_box = wibox.container.constraint(therm_text, "exact", 48)
+widgets.therm = make_pill(therm_box)
 
 local therm_tooltip = awful.tooltip {
     objects = { widgets.therm },
@@ -229,8 +278,13 @@ end, 10, "thermal_zone0")
 -- ============================================================================
 -- 5. Battery Widget (󰁹 / 󰂄)
 -- ============================================================================
-local bat_text = wibox.widget.textbox()
-widgets.bat = make_pill(bat_text)
+local bat_text = wibox.widget {
+    align  = "center",
+    valign = "center",
+    widget = wibox.widget.textbox,
+}
+local bat_box = wibox.container.constraint(bat_text, "exact", 48)
+widgets.bat = make_pill(bat_box)
 
 local bat_tooltip = awful.tooltip {
     objects = { widgets.bat },
