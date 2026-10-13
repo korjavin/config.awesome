@@ -488,15 +488,65 @@ function widgets.change_volume(step)
     )
 end
 
+-- ============================================================================
+-- 9. Brightness Widget (󰃠) & OSD
+-- ============================================================================
+local bright_text = wibox.widget {
+    align  = "center",
+    valign = "center",
+    widget = wibox.widget.textbox,
+}
+local bright_box = wibox.container.constraint(bright_text, "exact", 50)
+widgets.brightness = make_pill(bright_box)
+
+local bright_tooltip = awful.tooltip {
+    objects = { widgets.brightness },
+    mode    = "outside",
+    align   = "top",
+}
+
+function widgets.parse_brightness(stdout, show_osd)
+    local pct = tonumber(stdout:match(",([%d]+)%%,")) or 0
+
+    bright_text:set_markup(string.format(
+        "<span font='%s' color='%s'>󰃠</span> <span font='%s' color='%s'>%d%%</span>",
+        icon_font, colors.yellow, text_font, colors.fg_text, pct
+    ))
+
+    bright_tooltip:set_text(string.format(
+        "Яркость экрана: %d%%\nСкролл: Регулировка (±5%%)", pct
+    ))
+
+    if show_osd then
+        widgets.show_osd("brightness", pct)
+    end
+end
+
+function widgets.update_brightness(show_osd)
+    awful.spawn.easy_async("brightnessctl -m", function(stdout)
+        widgets.parse_brightness(stdout, show_osd)
+    end)
+end
+
 function widgets.change_brightness(step)
     local cmd = step > 0 and ("brightnessctl -q set +" .. step .. "%") or ("brightnessctl -q set " .. math.abs(step) .. "%- -n")
     awful.spawn.easy_async_with_shell(cmd .. " && brightnessctl -m", function(stdout)
-        local pct = stdout:match(",([%d]+)%%,")
-        if pct then
-            widgets.show_osd("brightness", tonumber(pct))
-        end
+        widgets.parse_brightness(stdout, true)
     end)
 end
+
+widgets.brightness:buttons(gears.table.join(
+    awful.button({}, 1, function() widgets.update_brightness(true) end),
+    awful.button({}, 4, function() widgets.change_brightness(5) end),
+    awful.button({}, 5, function() widgets.change_brightness(-5) end)
+))
+
+widgets.update_brightness(false)
+gears.timer {
+    timeout = 15,
+    autostart = true,
+    callback = function() widgets.update_brightness(false) end,
+}
 
 widgets.volume:buttons(gears.table.join(
     awful.button({}, 1, function() widgets.change_volume("toggle") end),
