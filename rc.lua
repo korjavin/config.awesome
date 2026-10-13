@@ -71,6 +71,12 @@ beautiful.tasklist_bg_normal    = "#222222"
 beautiful.tasklist_fg_normal    = "#888888"
 beautiful.tasklist_plain_task_name = true
 
+-- Window gaps and borders (Nord style)
+beautiful.useless_gap   = 4
+beautiful.border_width  = 2
+beautiful.border_focus  = "#81A1C1"
+beautiful.border_normal = "#2E3440"
+
 -- This is used later as the default terminal and editor to run.
 terminal = "kitty"
 -- terminal = "/home/iv/Projects/kitty/linux-package/bin/kitty"
