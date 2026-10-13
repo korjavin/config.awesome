@@ -53,6 +53,24 @@ local widgets = require("widgets")
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
+-- Taglist & Tasklist styling (Nord palette)
+beautiful.taglist_bg_focus      = "#81A1C1"
+beautiful.taglist_fg_focus      = "#2E3440"
+beautiful.taglist_bg_occupied   = "#3B4252"
+beautiful.taglist_fg_occupied   = "#ECEFF4"
+beautiful.taglist_bg_empty      = "#222222"
+beautiful.taglist_fg_empty      = "#6C7A96"
+beautiful.taglist_bg_urgent     = "#BF616A"
+beautiful.taglist_fg_urgent     = "#ECEFF4"
+beautiful.taglist_squares_sel   = nil
+beautiful.taglist_squares_unsel = nil
+
+beautiful.tasklist_bg_focus     = "#3B4252"
+beautiful.tasklist_fg_focus     = "#ECEFF4"
+beautiful.tasklist_bg_normal    = "#222222"
+beautiful.tasklist_fg_normal    = "#888888"
+beautiful.tasklist_plain_task_name = true
+
 -- This is used later as the default terminal and editor to run.
 terminal = "kitty"
 -- terminal = "/home/iv/Projects/kitty/linux-package/bin/kitty"
@@ -225,11 +243,72 @@ awful.screen.connect_for_each_screen(function(s)
                            awful.button({ }, 3, function () awful.layout.inc(-1) end),
                            awful.button({ }, 4, function () awful.layout.inc( 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(-1) end)))
-    -- Create a taglist widget
-    s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, taglist_buttons)
+    -- Create a taglist widget (all 1-9 tags shown as rounded badges)
+    s.mytaglist = awful.widget.taglist {
+        screen          = s,
+        filter          = awful.widget.taglist.filter.all,
+        buttons         = taglist_buttons,
+        layout          = {
+            spacing = 4,
+            layout  = wibox.layout.fixed.horizontal,
+        },
+        widget_template = {
+            {
+                {
+                    {
+                        id     = 'text_role',
+                        font   = 'sans bold 9',
+                        widget = wibox.widget.textbox,
+                    },
+                    margins = { left = 8, right = 8, top = 2, bottom = 2 },
+                    widget  = wibox.container.margin,
+                },
+                layout = wibox.layout.fixed.horizontal,
+            },
+            id     = 'background_role',
+            shape  = function(cr, width, height)
+                gears.shape.rounded_rect(cr, width, height, 4)
+            end,
+            widget = wibox.container.background,
+        },
+    }
 
     -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
+    s.mytasklist = awful.widget.tasklist {
+        screen          = s,
+        filter          = awful.widget.tasklist.filter.currenttags,
+        buttons         = tasklist_buttons,
+        layout          = {
+            spacing = 6,
+            layout  = wibox.layout.flex.horizontal,
+        },
+        widget_template = {
+            {
+                {
+                    {
+                        {
+                            id     = 'icon_role',
+                            widget = wibox.widget.imagebox,
+                        },
+                        margins = { top = 2, bottom = 2, right = 4 },
+                        widget  = wibox.container.margin,
+                    },
+                    {
+                        id     = 'text_role',
+                        widget = wibox.widget.textbox,
+                    },
+                    layout = wibox.layout.fixed.horizontal,
+                },
+                margins = { left = 8, right = 8, top = 2, bottom = 2 },
+                widget  = wibox.container.margin,
+            },
+            id     = 'background_role',
+            shape  = function(cr, width, height)
+                gears.shape.rounded_rect(cr, width, height, 4)
+            end,
+            widget = wibox.container.background,
+        },
+    }
 
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s })
